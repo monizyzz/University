@@ -6,7 +6,7 @@ enumFromTo' x y | x > y = []
 
 -- 2.
 enumFromThenTo' :: Int -> Int -> Int -> [Int]
-enumFromThenTo' x y z | y > z = x : []
+enumFromThenTo' x y z | y > z = [x]
                       | x < z = x : enumFromThenTo' y (y + (y-x)) z
                       | otherwise = []
 
@@ -29,7 +29,7 @@ reversee [] = []
 -- 6. 
 takee :: Int -> [a] -> [a]
 takee n (h:t) | n == 0 = []
-              | n >= 1 && n <= length t = h: takee (n-1) t
+              | n >= 1 && n <= length t = h : takee (n-1) t
               | otherwise = (h:t)
 
 -- 7.
@@ -100,7 +100,11 @@ retiraUltimo (h:t) = h : retiraUltimo t
 -- 14. 
 tailss :: [a] -> [[a]]
 tailss [] = [[]]
-tailss l = [l] ++ tailss ( retiraPrimeiro l )
+tailss l = [l] ++ tailss (retiraPrimeiro l)
+
+tailsss :: [a] -> [[a]]
+tailsss [] = [[]]
+tailsss (h:t) = (h:t) : tailsss t
 
 retiraPrimeiro :: [a] -> [a]
 retiraPrimeiro [] = []
