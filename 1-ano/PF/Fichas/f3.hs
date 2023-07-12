@@ -179,7 +179,7 @@ ordena [] = []
 ordena ((nom,dat):t) = aux (nom,dat)  (ordena t)
                        where aux (no,da) [] = [(no,da)]
                              aux (no,da) ((n,d):t) = if (anterior da d) == False then (n,d) : aux (no,da) t
-                                                                                 else (no,da) : aux (n,d) t    
+                                                     else (no,da) : aux (n,d) t    
 
 -- (e)
 porIdade:: Data -> TabDN -> [(Nome,Int)]
