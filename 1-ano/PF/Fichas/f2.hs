@@ -69,12 +69,12 @@ tresUlt (h:t) = if (length (h:t)) <= 3 then (h:t) else tresUlt t
 -- (g)
 segundos :: [(a,b)] -> [b]
 segundos [] = []
-segundos ((x,y):t) = [y] ++ segundos t 
+segundos ((x,y):t) = y : segundos t 
 
 -- (h) 
 nosPrimeiros :: (Eq a) => a -> [(a,b)] -> Bool
 nosPrimeiros a ((x,y):t) = if a == x then nosPrimeiros a t
-                         else False
+                           else False
 
 -- (i)
 sumTriplos :: (Num a, Num b, Num c) => [(a,b,c)] -> (a,b,c)
