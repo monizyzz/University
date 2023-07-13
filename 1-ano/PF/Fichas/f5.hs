@@ -79,14 +79,14 @@ simp pol = filter (\x -> fst(x) /= 0) pol
 
 -- (g)
 mult :: Monomio -> Polinomio -> Polinomio
-mult (cm,gm) pol = map (\x -> (fst(x)*cm,snd(x)*gm)) pol 
+mult (cm,gm) pol = map (\x -> (fst(x)*cm,snd(x)+gm)) pol 
 
 -- (h)
 ordena :: Polinomio -> Polinomio
 ordena pol = foldr aux [] pol
              where aux :: Monomio -> Polinomio -> Polinomio
                    aux (cm,gm) [] = [(cm,gm)]
-                   aux (cm,gm) ((cm2,gm2):t) = if gm < gm2 then (cm,gm): (cm2,gm2): t else (cm2,gm2): aux (cm,gm) t
+                   aux (cm,gm) ((cm2,gm2):t) = if gm < gm2 then (cm,gm) : (cm2,gm2) : t else (cm2,gm2) : aux (cm,gm) t
 
 ordena' :: Polinomio -> Polinomio
 ordena' pol = sortOn' snd pol
@@ -95,6 +95,15 @@ ordena' pol = sortOn' snd pol
 normaliza :: Polinomio -> Polinomio
 normaliza [] = []
 normaliza ((b,e):ps) = (sum [bs | (bs,es) <- selgrau e ps] + b,e):normaliza [(bo,eo) | (bo,eo) <- ps, eo /= e]
+
+-- ao assumir que o polinómio está ordenado
+normaliza' :: Polinomio -> Polinomio
+normaliza' [a] = [a]
+normaliza' [] = []
+normaliza' (h:t) = foldl (\((c,e):p) (c',e')-> if e==e'
+                                         then (c+c',e):p
+                                         else (c',e'):(c,e):p ) [h] t
+
 
 -- (j)
 soma' :: Polinomio -> Polinomio -> Polinomio
@@ -111,9 +120,11 @@ equiv pol1 pol2 = ordena(normaliza pol1) == ordena(normaliza pol2)
 -- 3.  
 type Mat a = [[a]]
 {- matriz (triangular superior)
+
 |1 2 3|
 |0 4 5|   [[1,2,3], [0,4,5], [0,0,6]]
 |0 0 6|
+
 -}
 -- (a)
 dimOK :: Mat a -> Bool
@@ -121,24 +132,24 @@ dimOK (l:rm) = all (\l1 -> length l == length l1) rm
 
 -- (b)
 dimMat :: Mat a -> (Int,Int)
-dimMat (l:rm) = (length l, length (l:rm))
+dimMat (l:rm) = (length (l:rm), length l)
 
 -- (c)
 addMat :: Num a => Mat a -> Mat a -> Mat a
 addMat m1 m2 = zipWith' (\l1 l2 -> zipWith' (+) l1 l2) m1 m2
 
--- (d) ???
+-- (d) 
 transpose :: Mat a -> Mat a
 transpose ([]:_) = []
 transpose m = let l = map head m
                   rm = map tail m
-              in l: transpose rm
+              in l : transpose rm
 
 -- (e)
 multMat :: Num a => Mat a -> Mat a -> Mat a
 multMat m1 m2 = zipWith (\l1 l2 -> zipWith (*) l1 l2) m1 m2
 
--- (f) ???
+-- (f) 
 zipWMat :: (a -> b -> c) -> Mat a -> Mat b -> Mat c
 zipWMat f m1 m2 = zipWith (\l1 l2 -> zipWith f l1 l2) m1 m2
 
@@ -154,4 +165,4 @@ rotateLeft :: Mat a -> Mat a
 rotateLeft ([]:_) = [[]]
 rotateLeft m = let l = map last m
                    rm = map init m
-               in l: rotateLeft rm
+               in l : rotateLeft rm
