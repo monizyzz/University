@@ -67,7 +67,7 @@ grau pol = foldr (\x g -> if snd x > g then snd(x) else g) 0 pol
 -- (d)
 deriv :: Polinomio -> Polinomio
 deriv pol = let l = map (\(c,g) -> if g > 0 then (c*fromIntegral(g),g-1) else (0,0)) pol
-             in filter(/=(0,0)) l
+            in filter(/=(0,0)) l
 
 -- (e)
 calcula :: Float -> Polinomio -> Float

@@ -1,0 +1,11 @@
+As funções de ordem superior map, filter, foldr e foldl percorrem a lista para realizar suas operações, mas a forma como percorrem a lista pode ser diferente.
+
+A função map percorre a lista uma única vez, aplicando uma função a cada elemento e construindo uma nova lista com os resultados. Cada elemento é processado independentemente dos outros elementos.
+
+A função filter também percorre a lista uma única vez, verificando uma condição para cada elemento e construindo uma nova lista contendo apenas os elementos que satisfazem a condição.
+
+A função foldr percorre a lista da direita para a esquerda, aplicando uma função acumuladora a cada elemento e acumulando um valor ao longo do percurso. A função acumuladora recebe o elemento atual e o valor acumulado até o momento.
+
+A função foldl percorre a lista da esquerda para a direita, aplicando uma função acumuladora a cada elemento e acumulando um valor ao longo do percurso. A função acumuladora recebe o valor acumulado até o momento e o elemento atual.
+
+Portanto, todas essas funções fazem uma travessia na lista, mas a maneira como percorrem e operam sobre os elementos pode variar. É importante escolher a função adequada para cada tarefa, levando em consideração a direção de percurso desejada e o tipo de operação que precisa ser realizada.
