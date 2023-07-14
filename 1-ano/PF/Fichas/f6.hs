@@ -72,14 +72,14 @@ minSmin (Node r e d) = let (min, e') = minSmin e
 -- (d) ???
 remove :: Ord a => a -> BTree a -> BTree a
 remove _ Empty = Empty 
-remove x (Node r e d) |  x > r = Node r e (remove x d)
+remove x (Node r e d)   | x > r = Node r e (remove x d)
                         | x < r = Node r (remove x e) d
                         | otherwise = aux d e
                         where aux :: Ord a => BTree a -> BTree a -> BTree a
                               aux Empty d = d
                               aux e Empty = e
                               aux e d = let ( m,d') = minSmin d
-                                          in Node m e d'
+                                        in Node m e d'
 
 -- 3. 
 type Aluno = (Numero,Nome,Regime,Classificacao)
@@ -126,7 +126,7 @@ percFaltas t = ((fromIntegral(faltas t))/(fromIntegral(contaNodos t)))*100
                                              faltas Empty = 0
                                              faltas (Node (_,_,_,clas) e d) = case clas of Faltou -> 1 + faltas e + faltas d; otherwise -> 0
 
--- (f) ???
+-- (f)
 mediaAprov :: Turma -> Float
 mediaAprov Empty = 0 
 mediaAprov t = sumNotas t / total t

@@ -281,14 +281,14 @@ posicaoM m (h:t) x n = if h > m then posicaoM h t n (n+1)
 lookup' :: Eq a => a -> [(a,b)] -> Maybe b
 lookup' _ [] = Nothing
 lookup' a ((x,y):t) = if a == x then Just y
-                       else lookup' a t
+                      else lookup' a t
 
 -- 36.  
 preCrescente' :: Ord a => [a] -> [a]
 preCrescente' [] = []
 preCrescente' [x] = [x]
 preCrescente' (x:y:t) = if x <= y then x : preCrescente' (y:t)
-                      else [x]
+                        else [x]
 
 -- 37. 
 iSort' :: Ord a => [a] -> [a]

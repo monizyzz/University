@@ -73,7 +73,7 @@ listaLT (Fork e d) = listaLT e ++ listaLT d
 -- (c)
 ltHeight :: LTree a -> Int 
 ltHeight (Tip x) = 1 
-ltHeight (Fork e d) = 1+ max (ltHeight e)  (ltHeight d)
+ltHeight (Fork e d) = 1 + max (ltHeight e)  (ltHeight d)
 
 -- 4.  
 data FTree a b = Leaf b | No a (FTree a b) (FTree a b) -- full trees
