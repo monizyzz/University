@@ -88,16 +88,11 @@ maior l | vazia l = Nothing
 Por exemplo, a imagem ex acima deverá ser igual a Juntar [Mover (5,5) (Quadrado 4), Mover (5,6) (Quadrado 5), Mover (9,8) (Quadrado 2)]. -}
 
 instance Eq Imagem where
-    x == y = let a = posicoesI (0,0) x
-                 b = posicoesI (0,0) y
-             in (all (pertence a) b)
+    (==) (Quadrado x) (Quadrado y) = x == y
+    (==) (Mover (x1,y1) i1) (Mover (x2,y2) i2) = x1 == x2 && y1 == y2 && i1 == i2 
+    (==) (Juntar []) (Juntar []) = True
+    (==) (Juntar [h1]) (Juntar [h2]) = h1 == h2
+    (==) (Juntar (h1:t1)) (Juntar (h2:t2)) = if h1 == h2 then Juntar t1 == Juntar t2
+                                             else False 
 
-posicoesI :: (Int,Int) -> Imagem -> [Imagem]
-posicoesI (x,y) (Quadrado a) = [(Mover (x,y) (Quadrado x))]
-posicoesI (x,y) (Mover (a,b) l) = posicoesI (x+a,y+b) l
-posicoesI (x,y) (Juntar l) = concat (map (posicoesI (x,y)) l)
-
-pertence :: [Imagem] -> Imagem -> Bool
-pertence [] _ = False
-pertence ((Mover (x1,y1) (Quadrado d1)):t) (Mover (x2,y2) (Quadrado d2)) | x1==x2 && y1==y2 = d1 == d2
-                                                                         | otherwise = pertence t (Mover (x2,y2) (Quadrado d2))
+    (==) (Mover (x1,y1) i1) (Juntar (h1:t1)) =  i1 == h1

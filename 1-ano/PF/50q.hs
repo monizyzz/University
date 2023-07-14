@@ -304,7 +304,7 @@ insert'' a (h:t) = if a <= h then a:h:t
 -- 38.
 menor' :: String -> String -> Bool
 menor' xs ys = if (length xs) < (length ys) then True
-                       else False
+               else False
 
 -- 39.  
 elemMSet' :: Eq a => a -> [(a,Int)] -> Bool
@@ -353,18 +353,18 @@ quantidade a (x:xs) = if a == x then 1 + quantidade a xs else 0 + quantidade a x
 partitionEithers' :: [Either a b] -> ([a],[b])
 partitionEithers' [] = ([],[])
 partitionEithers' (h:t) = case h of 
-        Left   a -> ( a:x , y )
+        Left  a -> ( a:x , y )
         Right b -> ( x , b:y )
     where (x,y) = partitionEithers' t
 
--- 45.  ???
+-- 45. 
 catMaybes' :: [Maybe a] -> [a]
 catMaybes' [] = [] 
 catMaybes' (h:t) = case h of
         Just a -> a : catMaybes' t
         Nothing -> catMaybes' t
 
--- 46. ???
+-- 46.
 data Movimento = Norte | Sul | Este | Oeste
                deriving Show
 
@@ -421,4 +421,3 @@ naoReparar (h:t) = case h of
     _ -> 1 + naoReparar t
 
 -- End
-
