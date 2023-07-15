@@ -84,7 +84,20 @@ pertence x (Uniao a b) = pertence x a && pertence x b
 
 --(c) Defina a função tira :: Double -> SReais -> SReais que retira um elemento de um conjunto.
 
+tira :: Double -> SReais -> SReais
+tira x (Uniao a b) = Uniao (tira x a) (tira x b)
 
+tira x (AA a b) | pertence x (AA a b) = Uniao (AA a x) (AA x b)
+                | otherwise = AA a b
+
+tira x (FF a b) | pertence x (FF a b) = Uniao (FA a x) (AF x b)
+                | otherwise = FF a b
+
+tira x (AF a b) | pertence x (AF a b) = Uniao (AA a x) (AF x b)
+                | otherwise = AF a b
+
+tira x (FA a b) | pertence x (FA a b) = Uniao (FA a x) (AA x b)
+                | otherwise = FA a b
 
 --3. Considere o seguinte tipo para representar árvores irregulares (rose trees).
 
@@ -95,3 +108,10 @@ uma árvore e dá a lista de valores por onde esse caminho passa. Se o caminho n
 a função deve retornar Nothing. O caminho é representado por uma lista de inteiros (1 indica
 seguir pela primeira sub-árvore, 2 pela segunda, etc). -} 
 
+percorre :: [Int] -> RTree a -> Maybe [a]
+percorre [] (R a _) = Just [a]
+percorre _  (R a []) = Nothing
+percorre (x:xs)  (R a l) = Just (a:b)
+                           where b = aux (percorre xs (l!!(x-1)))
+                                 aux Nothing = []
+                                 aux (Just y) = y 
