@@ -4,7 +4,7 @@ import Data.Maybe
 import Distribution.Simple (coverageSupported)
 
 
---Teste 2016/2017
+-- Teste 2016/2017
 
 --1. Considere o tipo MSet a para representar multi-conjuntos de tipo a
 

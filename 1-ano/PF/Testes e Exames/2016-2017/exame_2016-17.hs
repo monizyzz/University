@@ -6,18 +6,23 @@ import Data.List
 pelo caracter ’\n’. Por exemplo, unlines ["Prog", "Func" == "Prog\nFunc". -} 
 
 unlines' :: [String] -> String
-unlines' [] = ""
+unlines' [] = []
 unlines' [x] = x
-unlines' (h:t) = h ++ "\n" ++ unlines' t 
+unlines' (h:t) = h ++ "\n" ++ unlines' t
 
 {- (b) (\\) :: (Eq a) => [a] -> [a] -> [a] que retorna a lista resultante de remover (as primeiras
 ocorrências) dos elementos da segunda lista da primeira. Por exemplo,
 (\\) [1,2,3,4,5,1] [1,5] == [2,3,4,1] e (\\) [1,2,2,3,2,1,4,1] [2,1,2] == [3,2,1,4,1]. -}
 
 (\\\) :: (Eq a) => [a] -> [a] -> [a]
-(\\\) [] _ = []
-(\\\) l [] = l 
-(\\\) l (h:t) = (\\\) (delete h l) t
+(\\\) l [] = l
+(\\\) [] l = [] 
+(\\\) l (y:ys) = (\\\) (removeFisrt y l) ys
+
+removeFisrt :: Eq a => a -> [a] -> [a]
+removeFisrt _ [] = []
+removeFisrt x (h:t) | x == h = t 
+                    | otherwise = h : removeFisrt x t
 
 {- 2. Considere o seguinte tipo de dados para representar uma sequência em que os elementos podem ser
 acrescentados à esquerda (Inicio) ou à direita (Fim) da sequência. -}
@@ -28,16 +33,16 @@ data Seq a = Nil | Inicio a (Seq a) | Fim (Seq a) a
 primeiro elemento. -}
 
 primeiro :: Seq a -> a
-primeiro (Inicio n s) = n 
-primeiro (Fim Nil n) = n 
-primeiro (Fim s n) = primeiro s 
+primeiro (Inicio a t) = a
+primeiro (Fim Nil t) = t 
+primeiro (Fim a t) = primeiro a
 
 --(b) Defina a função semUltimo :: Seq a -> Seq a que recebe uma sequência não vazia e devolve a sequência sem o seu último elemento.
 
 semUltimo :: Seq a -> Seq a
-semUltimo (Inicio n Nil) =  Nil
-semUltimo (Inicio n s) =  Inicio n (semUltimo s)
-semUltimo (Fim s n) = s
+semUltimo (Inicio a Nil) = Nil
+semUltimo (Inicio a t) = Inicio a (semUltimo t)
+semUltimo (Fim a t) = a
 
 -- 3. Considere o seguinte tipo para representar árvores binárias.
 
@@ -48,17 +53,16 @@ os elementos a partir de uma determinada profundidade. -}
 
 prune :: Int -> BTree a -> BTree a
 prune _ Empty = Empty 
-prune 0 _ = Empty 
-prune n (Node r e d) = Node r (prune (n-1) e ) (prune (n-1) d)
+prune 0 _ = Empty
+prune n (Node r e d) = Node r (prune (n-1) e) (prune (n-1) d)
 
 {- (b) Defina uma função semMinimo :: (Ord a) => BTree a -> BTree a que remove o menor
 elemento de uma árvore binária de procura não vazia. -}
 
 semMinimo :: (Ord a) => BTree a -> BTree a
-semMinimo Empty = Empty 
+semMinimo Empty = Empty
 semMinimo (Node r Empty d) = d
-semMinimo (Node r e d) = Node r (semMinimo e) d 
-
+semMinimo (Node r e d) = Node r (semMinimo e) d
 
 {- 4. O problema das N rainhas consiste em colocar N rainhas num tabuleiro de xadrez com N linhas e N colunas, de tal forma que
 nenhuma rainha está amea¸cada por outra. Note que uma rainha amea¸ca todas as posições que estão na mesma linha, na mesma
@@ -70,8 +74,8 @@ type Tabuleiro = [String]
 {- exemplo :: Tabuleiro
    exemplo = ["..R.",
               "R...",
-		              "...R",
-		              ".R.."] -}
+		        "...R",
+		        ".R.."] -}
 
 {- (a) Defina a função posicoes :: Tabuleiro -> [(Int,Int)] que determina as posições (coluna e linha) onde se encontram as rainhas num 
 tabuleiro, de tal forma que posicoes exemplo == [(2,0),(0,1),(3,2),(1,3)]. -}
