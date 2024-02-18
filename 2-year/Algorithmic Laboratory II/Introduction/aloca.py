@@ -9,3 +9,17 @@ alocados a nenhum projecto, ordenada por ordem de número de aluno.
 
 """
 
+def aloca(prefs):
+    dic = {}
+    alunos_nao_alocados = []
+    
+    for aluno in sorted(prefs):
+        for projeto in prefs[aluno]:
+            if projeto not in dic:
+                dic[projeto] = aluno
+                break
+            
+        else:
+            alunos_nao_alocados.append(aluno)
+    
+    return alunos_nao_alocados
