@@ -16,7 +16,7 @@ public class App {
                 out.println(graus + " graus celsius correspondem a " + farenheit + " graus Farenheit");
                 break;
             
-                case 2:
+            case 2:
                 out.print("Número 1: ");
                 int num1 = scan.nextInt();
                 out.print("Número 2: ");
