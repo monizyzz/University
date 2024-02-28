@@ -11,14 +11,14 @@ No caso do '{' as instruções seguintes deverão também estar identadas
 # 20%
 def formata(codigo):
     codigo_formatado = ""
-    indentadas = 0
-        
+    indentadas = 0   
+    codigo = codigo.strip()
+    codigo = "".join(codigo.split("  "))
+    
+    print(codigo)
+    
     for char in codigo:
-        if char == ';' and codigo.index(char) == len(codigo) - 1:
-            codigo_formatado += char
-            return codigo_formatado
-            
-        elif char == ';':
+        if char == ';':
             codigo_formatado += char + '\n' + ' ' * indentadas
             
         elif char == '{':

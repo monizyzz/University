@@ -25,5 +25,9 @@ def frequencia(texto):
     final = []        
     for o in res:
         final.append(o[0])
+        
+    """ 
+    res = [word for word,num in final]
+    """
     
     return final
