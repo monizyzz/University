@@ -76,6 +76,8 @@ public class Ficha2 {
                         out.println("Alínea inexistente");
                         break;
                 }
+                break;
+
             case 6:
                 Matrizes matrizes = new Matrizes();
                 int numLinhas = 3;
@@ -94,7 +96,7 @@ public class Ficha2 {
                 String alinea6 = scan.next();
                 out.println();
                 
-                switch (alinea6){
+                switch (alinea6) {
                     case "a":
                         matrizes.lerMatriz(matriz1, numLinhas, numColunas);
                         matrizes.lerMatriz(matriz2, numLinhas, numColunas);
@@ -108,13 +110,13 @@ public class Ficha2 {
                         out.println(matrizes.saoIguais(matriz1, matriz2, numLinhas, numColunas));
                         break;
                     
-                        case "d":
+                    case "d":
                         matrizes.matrizOposta(matriz1, result, numLinhas, numColunas);
                         matrizes.matrizOposta(matriz2, result, numLinhas, numColunas);
                         break;
 
                     default:
-                        out.print("Alinea inexistente");
+                        out.print("Alínea inexistente");
                         break;
                 } 
         }
