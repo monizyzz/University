@@ -118,7 +118,31 @@ public class Ficha2 {
                     default:
                         out.print("Alínea inexistente");
                         break;
-                } 
+                }
+                break;
+
+            case 7: 
+                out.println("EuroMilhões");
+                EuroMilhoes euroMilhoes = new EuroMilhoes(5,2);
+                euroMilhoes.gerarChave();
+                int[] numerosUser = new int[5];
+                int[] estrelasUser = new int[2];
+
+                out.println("Insere números entre 1 e 50");
+                for (int i = 0; i < 5; i += 1) {
+                    out.print("Número " + (i+1) + ": ");
+                    numerosUser[i] = scan.nextInt();
+                }
+
+                out.println("Insere números entre 1 e 12");
+                for (int i = 0; i < 2; i += 1) {
+                    out.print("Estrela " + (i+1) + ": ");
+                    estrelasUser[i] = scan.nextInt();
+                }
+
+                euroMilhoes.imprimeChave();
+                euroMilhoes.comparaAposta(numerosUser, estrelasUser);
+                break;
         }
 
         scan.close();
