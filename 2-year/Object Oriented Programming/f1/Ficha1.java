@@ -1,6 +1,4 @@
-import java.time.LocalDateTime;
-
-import static java.lang.System.nanoTime;
+// import static java.lang.System.nanoTime;
 import static java.lang.System.out;
 
 public class Ficha1 {
