@@ -1,6 +1,7 @@
 import java.util.Random;
 import static java.lang.System.out;
 
+// 7.
 public class EuroMilhoes {
     private int[] numeros;
     private int[] estrelas;

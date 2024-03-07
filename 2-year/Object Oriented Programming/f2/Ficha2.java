@@ -78,6 +78,83 @@ public class Ficha2 {
                 }
                 break;
 
+            case 5: 
+                Turma turma = new Turma(5,5);
+                // 5. (a)
+                // preencher matriz para depois utilizar outras alíneas
+                for (int i = 0; i < 5; i += 1) {
+                    out.println("-- ALUNO " + i + " --");
+                    out.println();
+                    for (int j = 0; j < 5; j += 1) {
+                        out.println("Uc " + j);
+                        out.print("Nota: ");
+                        int nota = scan.nextInt();
+                        turma.atualizarPauta(i, j, nota);
+                    }
+                    out.println();
+                }
+                do {
+                    out.print("Alínea: ");
+                    String alinea5 = scan.next();
+                    out.println();
+
+
+                    switch (alinea5) {
+                        case "b":
+                            out.print("Índice da Uc: ");
+                            int indiceUc = scan.nextInt();
+                            int somaNotas = turma.somaNotasUcs(indiceUc);
+                            out.println("A soma das notas desta uc é " + somaNotas);
+                            break;
+
+                        case "c":
+                            out.print("Índice do aluno: ");
+                            int indiceAluno = scan.nextInt();
+                            float mediaNotasAluno = turma.mediaAluno(indiceAluno);
+                            out.println("A média deste aluno é " + mediaNotasAluno);
+                            break;
+
+                        case "d":
+                            out.print("Insira o índice da uc: ");
+                            int ucIndex = scan.nextInt();
+                            float mediaNotasUc = turma.mediaUc(ucIndex);
+                            out.println("A média desta uc é " + mediaNotasUc);
+                            break;
+
+                        case "e":
+                            int notaMaisAlta = turma.notaMaisAlta();
+                            out.println("A nota mais alta da turma é " + notaMaisAlta);
+                            break;
+
+                        case "f":
+                            int notaMaisBaixa = turma.notaMaisBaixa();
+                            out.println("A nota mais baixa da turma é " + notaMaisBaixa);
+                            break;
+
+                        case "g":
+                            out.println("Insira um numero inteiro: ");
+                            int valor = scan.nextInt();
+                            turma.notasAcimaDe(valor);
+                            break;
+
+                        case "h":
+                            out.println("Notas de todos os alunos do curso");
+                            turma.notasTodosAlunos();
+                            break;
+
+                        case "i":
+                            turma.mediaUcMaisAlta();
+                            break;
+                    
+                        default:
+                            out.println("Alínea inexistente");
+                    }
+
+                    out.print("Deseja continuar (s/n)? ");
+
+                } while (scan.next().equalsIgnoreCase("s"));
+                break;
+
             case 6:
                 Matrizes matrizes = new Matrizes();
                 int numLinhas = 3;
@@ -143,7 +220,7 @@ public class Ficha2 {
                 euroMilhoes.imprimeChave();
                 euroMilhoes.comparaAposta(numerosUser, estrelasUser);
                 break;
-        }
+        } 
 
         scan.close();
     }
