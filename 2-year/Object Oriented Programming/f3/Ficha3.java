@@ -62,18 +62,33 @@ public class Ficha3 {
                 }
                 break;
             
-            case 6:
+            case 5:
+                Lampada lamp = new Lampada(); // desligada
                 
-
-                switch (alinea6) {
-                    case "":
-                        
-                        break;
+                // ON
+                LocalDateTime inicioOn = LocalDateTime.now();
+                lamp.lampON();
+                out.println("Estado: " + lamp.getEstado());
+                LocalDateTime fimOn = LocalDateTime.now();
                 
-                    default:
-                    out.println("Não existe essa alínea");
-                        break;
-                }
+                long timeOn = ChronoUnit.MILLIS.between(inicioOn, fimOn);
+                
+                // ECO
+                LocalDateTime inicioEco = LocalDateTime.now();
+                lamp.lampECO();
+                out.println("Estado: " + lamp.getEstado());
+                LocalDateTime fimEco = LocalDateTime.now();
+                
+                long timeEco = ChronoUnit.MILLIS.between(inicioEco, fimEco);
+                
+                // OFF
+                lamp.lampOFF();
+                out.println("Estado: " + lamp.getEstado());
+                
+                long consumo = timeOn * 10 + timeEco * 5;
+                out.println(lamp.totalConsumo() + " == " + consumo);
+                out.println(lamp.periodoConsumo());
+                break;
                 
         }
 
