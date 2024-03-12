@@ -19,7 +19,7 @@ def bfs(adj,o):
                 vis.add(d)
                 pai[d] = v
                 queue.append(d)
-    return pai
+    return vis
 
 # from Root.src.grafos import bfs
 
@@ -47,7 +47,7 @@ def maior(vizinhos):
         if big < len(p):
             big = len(p)
     
-    return big + 1
+    return big 
 
 # or 
 
