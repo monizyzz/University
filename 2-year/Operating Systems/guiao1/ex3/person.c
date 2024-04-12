@@ -59,7 +59,7 @@ int person_change_age(char *name, int age) {
     int fd = open(FILENAME, O_WRONLY | O_RDONLY, 0644);
     int found = 0, n;
 
-    while ((n = read(fd, &p, sizeof(Person))) > 0) {
+    while ((n = read(fd, &p, sizeof(p))) > 0) {
         if (strcmp(p.name, name) == 0) {
             printf("Nome Encontrado!\n");
 			found = 1;
@@ -73,7 +73,7 @@ int person_change_age(char *name, int age) {
     }
 
     if(n == -1)
-		printf("Algum nao funciona\n");
+		printf("Algo nao funciona\n");
 
     if(found != 1)
 		printf("Pessoa nao encontrada\n");
