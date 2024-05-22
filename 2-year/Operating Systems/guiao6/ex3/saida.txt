@@ -1,0 +1,3 @@
+redirecionei STDOUT para saida.txt
+redirecionei STDERR para erros.txt
+  50   93 3057
