@@ -1,0 +1,6 @@
+-> Apenas os farmaceuticos com mais de 5 anos de experiencia podem gerir
+
+-> A base de dados apenas se encontra disponivel das 8:00 às 20:00
+
+-> Apenas o gestor da farmacia pode adicionar e remover funcionarios
+
