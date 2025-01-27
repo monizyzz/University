@@ -1,0 +1,522 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Grammar
+
+Rule 0     S' -> Programa
+Rule 1     Programa -> Frase
+Rule 2     Programa -> Frase Programa
+Rule 3     Frase -> Declaracao
+Rule 4     Frase -> Calculo
+Rule 5     Declaracao -> Lista : Figura
+Rule 6     Figura -> Rectangulo
+Rule 7     Figura -> Circulo
+Rule 8     Figura -> Quadrado
+Rule 9     Figura -> Triangulo
+Rule 10    Figura -> Losango
+Rule 11    Rectangulo -> RECT ( NUM , NUM )
+Rule 12    Circulo -> CIRC ( NUM )
+Rule 13    Quadrado -> QUAD ( NUM )
+Rule 14    Triangulo -> TRIA ( NUM , NUM )
+Rule 15    Losango -> LOSA ( NUM , NUM )
+Rule 16    Calculo -> AREA ( Lista )
+Rule 17    Calculo -> PERIMETRO ( ID )
+Rule 18    Lista -> ID
+Rule 19    Lista -> ID , Lista
+
+Terminals, with rules where they appear
+
+(                    : 11 12 13 14 15 16 17
+)                    : 11 12 13 14 15 16 17
+,                    : 11 14 15 19
+:                    : 5
+AREA                 : 16
+CIRC                 : 12
+ID                   : 17 18 19
+LOSA                 : 15
+NUM                  : 11 11 12 13 14 14 15 15
+PERIMETRO            : 17
+QUAD                 : 13
+RECT                 : 11
+TRIA                 : 14
+error                : 
+
+Nonterminals, with rules where they appear
+
+Calculo              : 4
+Circulo              : 7
+Declaracao           : 3
+Figura               : 5
+Frase                : 1 2
+Lista                : 5 16 19
+Losango              : 10
+Programa             : 2 0
+Quadrado             : 8
+Rectangulo           : 6
+Triangulo            : 9
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . Programa
+    (1) Programa -> . Frase
+    (2) Programa -> . Frase Programa
+    (3) Frase -> . Declaracao
+    (4) Frase -> . Calculo
+    (5) Declaracao -> . Lista : Figura
+    (16) Calculo -> . AREA ( Lista )
+    (17) Calculo -> . PERIMETRO ( ID )
+    (18) Lista -> . ID
+    (19) Lista -> . ID , Lista
+
+    AREA            shift and go to state 6
+    PERIMETRO       shift and go to state 7
+    ID              shift and go to state 8
+
+    Programa                       shift and go to state 1
+    Frase                          shift and go to state 2
+    Declaracao                     shift and go to state 3
+    Calculo                        shift and go to state 4
+    Lista                          shift and go to state 5
+
+state 1
+
+    (0) S' -> Programa .
+
+
+
+state 2
+
+    (1) Programa -> Frase .
+    (2) Programa -> Frase . Programa
+    (1) Programa -> . Frase
+    (2) Programa -> . Frase Programa
+    (3) Frase -> . Declaracao
+    (4) Frase -> . Calculo
+    (5) Declaracao -> . Lista : Figura
+    (16) Calculo -> . AREA ( Lista )
+    (17) Calculo -> . PERIMETRO ( ID )
+    (18) Lista -> . ID
+    (19) Lista -> . ID , Lista
+
+    $end            reduce using rule 1 (Programa -> Frase .)
+    AREA            shift and go to state 6
+    PERIMETRO       shift and go to state 7
+    ID              shift and go to state 8
+
+    Frase                          shift and go to state 2
+    Programa                       shift and go to state 9
+    Declaracao                     shift and go to state 3
+    Calculo                        shift and go to state 4
+    Lista                          shift and go to state 5
+
+state 3
+
+    (3) Frase -> Declaracao .
+
+    AREA            reduce using rule 3 (Frase -> Declaracao .)
+    PERIMETRO       reduce using rule 3 (Frase -> Declaracao .)
+    ID              reduce using rule 3 (Frase -> Declaracao .)
+    $end            reduce using rule 3 (Frase -> Declaracao .)
+
+
+state 4
+
+    (4) Frase -> Calculo .
+
+    AREA            reduce using rule 4 (Frase -> Calculo .)
+    PERIMETRO       reduce using rule 4 (Frase -> Calculo .)
+    ID              reduce using rule 4 (Frase -> Calculo .)
+    $end            reduce using rule 4 (Frase -> Calculo .)
+
+
+state 5
+
+    (5) Declaracao -> Lista . : Figura
+
+    :               shift and go to state 10
+
+
+state 6
+
+    (16) Calculo -> AREA . ( Lista )
+
+    (               shift and go to state 11
+
+
+state 7
+
+    (17) Calculo -> PERIMETRO . ( ID )
+
+    (               shift and go to state 12
+
+
+state 8
+
+    (18) Lista -> ID .
+    (19) Lista -> ID . , Lista
+
+    :               reduce using rule 18 (Lista -> ID .)
+    )               reduce using rule 18 (Lista -> ID .)
+    ,               shift and go to state 13
+
+
+state 9
+
+    (2) Programa -> Frase Programa .
+
+    $end            reduce using rule 2 (Programa -> Frase Programa .)
+
+
+state 10
+
+    (5) Declaracao -> Lista : . Figura
+    (6) Figura -> . Rectangulo
+    (7) Figura -> . Circulo
+    (8) Figura -> . Quadrado
+    (9) Figura -> . Triangulo
+    (10) Figura -> . Losango
+    (11) Rectangulo -> . RECT ( NUM , NUM )
+    (12) Circulo -> . CIRC ( NUM )
+    (13) Quadrado -> . QUAD ( NUM )
+    (14) Triangulo -> . TRIA ( NUM , NUM )
+    (15) Losango -> . LOSA ( NUM , NUM )
+
+    RECT            shift and go to state 20
+    CIRC            shift and go to state 21
+    QUAD            shift and go to state 22
+    TRIA            shift and go to state 23
+    LOSA            shift and go to state 24
+
+    Figura                         shift and go to state 14
+    Rectangulo                     shift and go to state 15
+    Circulo                        shift and go to state 16
+    Quadrado                       shift and go to state 17
+    Triangulo                      shift and go to state 18
+    Losango                        shift and go to state 19
+
+state 11
+
+    (16) Calculo -> AREA ( . Lista )
+    (18) Lista -> . ID
+    (19) Lista -> . ID , Lista
+
+    ID              shift and go to state 8
+
+    Lista                          shift and go to state 25
+
+state 12
+
+    (17) Calculo -> PERIMETRO ( . ID )
+
+    ID              shift and go to state 26
+
+
+state 13
+
+    (19) Lista -> ID , . Lista
+    (18) Lista -> . ID
+    (19) Lista -> . ID , Lista
+
+    ID              shift and go to state 8
+
+    Lista                          shift and go to state 27
+
+state 14
+
+    (5) Declaracao -> Lista : Figura .
+
+    AREA            reduce using rule 5 (Declaracao -> Lista : Figura .)
+    PERIMETRO       reduce using rule 5 (Declaracao -> Lista : Figura .)
+    ID              reduce using rule 5 (Declaracao -> Lista : Figura .)
+    $end            reduce using rule 5 (Declaracao -> Lista : Figura .)
+
+
+state 15
+
+    (6) Figura -> Rectangulo .
+
+    AREA            reduce using rule 6 (Figura -> Rectangulo .)
+    PERIMETRO       reduce using rule 6 (Figura -> Rectangulo .)
+    ID              reduce using rule 6 (Figura -> Rectangulo .)
+    $end            reduce using rule 6 (Figura -> Rectangulo .)
+
+
+state 16
+
+    (7) Figura -> Circulo .
+
+    AREA            reduce using rule 7 (Figura -> Circulo .)
+    PERIMETRO       reduce using rule 7 (Figura -> Circulo .)
+    ID              reduce using rule 7 (Figura -> Circulo .)
+    $end            reduce using rule 7 (Figura -> Circulo .)
+
+
+state 17
+
+    (8) Figura -> Quadrado .
+
+    AREA            reduce using rule 8 (Figura -> Quadrado .)
+    PERIMETRO       reduce using rule 8 (Figura -> Quadrado .)
+    ID              reduce using rule 8 (Figura -> Quadrado .)
+    $end            reduce using rule 8 (Figura -> Quadrado .)
+
+
+state 18
+
+    (9) Figura -> Triangulo .
+
+    AREA            reduce using rule 9 (Figura -> Triangulo .)
+    PERIMETRO       reduce using rule 9 (Figura -> Triangulo .)
+    ID              reduce using rule 9 (Figura -> Triangulo .)
+    $end            reduce using rule 9 (Figura -> Triangulo .)
+
+
+state 19
+
+    (10) Figura -> Losango .
+
+    AREA            reduce using rule 10 (Figura -> Losango .)
+    PERIMETRO       reduce using rule 10 (Figura -> Losango .)
+    ID              reduce using rule 10 (Figura -> Losango .)
+    $end            reduce using rule 10 (Figura -> Losango .)
+
+
+state 20
+
+    (11) Rectangulo -> RECT . ( NUM , NUM )
+
+    (               shift and go to state 28
+
+
+state 21
+
+    (12) Circulo -> CIRC . ( NUM )
+
+    (               shift and go to state 29
+
+
+state 22
+
+    (13) Quadrado -> QUAD . ( NUM )
+
+    (               shift and go to state 30
+
+
+state 23
+
+    (14) Triangulo -> TRIA . ( NUM , NUM )
+
+    (               shift and go to state 31
+
+
+state 24
+
+    (15) Losango -> LOSA . ( NUM , NUM )
+
+    (               shift and go to state 32
+
+
+state 25
+
+    (16) Calculo -> AREA ( Lista . )
+
+    )               shift and go to state 33
+
+
+state 26
+
+    (17) Calculo -> PERIMETRO ( ID . )
+
+    )               shift and go to state 34
+
+
+state 27
+
+    (19) Lista -> ID , Lista .
+
+    :               reduce using rule 19 (Lista -> ID , Lista .)
+    )               reduce using rule 19 (Lista -> ID , Lista .)
+
+
+state 28
+
+    (11) Rectangulo -> RECT ( . NUM , NUM )
+
+    NUM             shift and go to state 35
+
+
+state 29
+
+    (12) Circulo -> CIRC ( . NUM )
+
+    NUM             shift and go to state 36
+
+
+state 30
+
+    (13) Quadrado -> QUAD ( . NUM )
+
+    NUM             shift and go to state 37
+
+
+state 31
+
+    (14) Triangulo -> TRIA ( . NUM , NUM )
+
+    NUM             shift and go to state 38
+
+
+state 32
+
+    (15) Losango -> LOSA ( . NUM , NUM )
+
+    NUM             shift and go to state 39
+
+
+state 33
+
+    (16) Calculo -> AREA ( Lista ) .
+
+    AREA            reduce using rule 16 (Calculo -> AREA ( Lista ) .)
+    PERIMETRO       reduce using rule 16 (Calculo -> AREA ( Lista ) .)
+    ID              reduce using rule 16 (Calculo -> AREA ( Lista ) .)
+    $end            reduce using rule 16 (Calculo -> AREA ( Lista ) .)
+
+
+state 34
+
+    (17) Calculo -> PERIMETRO ( ID ) .
+
+    AREA            reduce using rule 17 (Calculo -> PERIMETRO ( ID ) .)
+    PERIMETRO       reduce using rule 17 (Calculo -> PERIMETRO ( ID ) .)
+    ID              reduce using rule 17 (Calculo -> PERIMETRO ( ID ) .)
+    $end            reduce using rule 17 (Calculo -> PERIMETRO ( ID ) .)
+
+
+state 35
+
+    (11) Rectangulo -> RECT ( NUM . , NUM )
+
+    ,               shift and go to state 40
+
+
+state 36
+
+    (12) Circulo -> CIRC ( NUM . )
+
+    )               shift and go to state 41
+
+
+state 37
+
+    (13) Quadrado -> QUAD ( NUM . )
+
+    )               shift and go to state 42
+
+
+state 38
+
+    (14) Triangulo -> TRIA ( NUM . , NUM )
+
+    ,               shift and go to state 43
+
+
+state 39
+
+    (15) Losango -> LOSA ( NUM . , NUM )
+
+    ,               shift and go to state 44
+
+
+state 40
+
+    (11) Rectangulo -> RECT ( NUM , . NUM )
+
+    NUM             shift and go to state 45
+
+
+state 41
+
+    (12) Circulo -> CIRC ( NUM ) .
+
+    AREA            reduce using rule 12 (Circulo -> CIRC ( NUM ) .)
+    PERIMETRO       reduce using rule 12 (Circulo -> CIRC ( NUM ) .)
+    ID              reduce using rule 12 (Circulo -> CIRC ( NUM ) .)
+    $end            reduce using rule 12 (Circulo -> CIRC ( NUM ) .)
+
+
+state 42
+
+    (13) Quadrado -> QUAD ( NUM ) .
+
+    AREA            reduce using rule 13 (Quadrado -> QUAD ( NUM ) .)
+    PERIMETRO       reduce using rule 13 (Quadrado -> QUAD ( NUM ) .)
+    ID              reduce using rule 13 (Quadrado -> QUAD ( NUM ) .)
+    $end            reduce using rule 13 (Quadrado -> QUAD ( NUM ) .)
+
+
+state 43
+
+    (14) Triangulo -> TRIA ( NUM , . NUM )
+
+    NUM             shift and go to state 46
+
+
+state 44
+
+    (15) Losango -> LOSA ( NUM , . NUM )
+
+    NUM             shift and go to state 47
+
+
+state 45
+
+    (11) Rectangulo -> RECT ( NUM , NUM . )
+
+    )               shift and go to state 48
+
+
+state 46
+
+    (14) Triangulo -> TRIA ( NUM , NUM . )
+
+    )               shift and go to state 49
+
+
+state 47
+
+    (15) Losango -> LOSA ( NUM , NUM . )
+
+    )               shift and go to state 50
+
+
+state 48
+
+    (11) Rectangulo -> RECT ( NUM , NUM ) .
+
+    AREA            reduce using rule 11 (Rectangulo -> RECT ( NUM , NUM ) .)
+    PERIMETRO       reduce using rule 11 (Rectangulo -> RECT ( NUM , NUM ) .)
+    ID              reduce using rule 11 (Rectangulo -> RECT ( NUM , NUM ) .)
+    $end            reduce using rule 11 (Rectangulo -> RECT ( NUM , NUM ) .)
+
+
+state 49
+
+    (14) Triangulo -> TRIA ( NUM , NUM ) .
+
+    AREA            reduce using rule 14 (Triangulo -> TRIA ( NUM , NUM ) .)
+    PERIMETRO       reduce using rule 14 (Triangulo -> TRIA ( NUM , NUM ) .)
+    ID              reduce using rule 14 (Triangulo -> TRIA ( NUM , NUM ) .)
+    $end            reduce using rule 14 (Triangulo -> TRIA ( NUM , NUM ) .)
+
+
+state 50
+
+    (15) Losango -> LOSA ( NUM , NUM ) .
+
+    AREA            reduce using rule 15 (Losango -> LOSA ( NUM , NUM ) .)
+    PERIMETRO       reduce using rule 15 (Losango -> LOSA ( NUM , NUM ) .)
+    ID              reduce using rule 15 (Losango -> LOSA ( NUM , NUM ) .)
+    $end            reduce using rule 15 (Losango -> LOSA ( NUM , NUM ) .)
+

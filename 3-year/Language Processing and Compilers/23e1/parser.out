@@ -1,0 +1,137 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Grammar
+
+Rule 0     S' -> S
+Rule 1     S -> IS .
+Rule 2     IS -> I RI
+Rule 3     RI -> <empty>
+Rule 4     RI -> I RI
+Rule 5     I -> [ NUM ; NUM ]
+
+Terminals, with rules where they appear
+
+.                    : 1
+;                    : 5
+NUM                  : 5 5
+[                    : 5
+]                    : 5
+error                : 
+
+Nonterminals, with rules where they appear
+
+I                    : 2 4
+IS                   : 1
+RI                   : 2 4
+S                    : 0
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . S
+    (1) S -> . IS .
+    (2) IS -> . I RI
+    (5) I -> . [ NUM ; NUM ]
+
+    [               shift and go to state 4
+
+    S                              shift and go to state 1
+    IS                             shift and go to state 2
+    I                              shift and go to state 3
+
+state 1
+
+    (0) S' -> S .
+
+
+
+state 2
+
+    (1) S -> IS . .
+
+    .               shift and go to state 5
+
+
+state 3
+
+    (2) IS -> I . RI
+    (3) RI -> .
+    (4) RI -> . I RI
+    (5) I -> . [ NUM ; NUM ]
+
+    .               reduce using rule 3 (RI -> .)
+    [               shift and go to state 4
+
+    I                              shift and go to state 6
+    RI                             shift and go to state 7
+
+state 4
+
+    (5) I -> [ . NUM ; NUM ]
+
+    NUM             shift and go to state 8
+
+
+state 5
+
+    (1) S -> IS . .
+
+    $end            reduce using rule 1 (S -> IS . .)
+
+
+state 6
+
+    (4) RI -> I . RI
+    (3) RI -> .
+    (4) RI -> . I RI
+    (5) I -> . [ NUM ; NUM ]
+
+    .               reduce using rule 3 (RI -> .)
+    [               shift and go to state 4
+
+    I                              shift and go to state 6
+    RI                             shift and go to state 9
+
+state 7
+
+    (2) IS -> I RI .
+
+    .               reduce using rule 2 (IS -> I RI .)
+
+
+state 8
+
+    (5) I -> [ NUM . ; NUM ]
+
+    ;               shift and go to state 10
+
+
+state 9
+
+    (4) RI -> I RI .
+
+    .               reduce using rule 4 (RI -> I RI .)
+
+
+state 10
+
+    (5) I -> [ NUM ; . NUM ]
+
+    NUM             shift and go to state 11
+
+
+state 11
+
+    (5) I -> [ NUM ; NUM . ]
+
+    ]               shift and go to state 12
+
+
+state 12
+
+    (5) I -> [ NUM ; NUM ] .
+
+    [               reduce using rule 5 (I -> [ NUM ; NUM ] .)
+    .               reduce using rule 5 (I -> [ NUM ; NUM ] .)
+

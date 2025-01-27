@@ -1,0 +1,98 @@
+@incollection {HDYE78,
+author = "Ricardo Martini and Pedro Rangel Henriques and Giovani Libreloto",
+title = "Storing Archival Emigration Documents to Create Virtual Exhibition Rooms",
+booktitle = "New Contributions in Information Systems and Technologies",
+series="Advances in Intelligent Systems and Computing",
+editor="Rocha, Alvaro and Correia, Ana and Costanzo, S. and Reis, Luis Paulo",
+volume="353",
+pages="403-409",
+year = "2015",
+month =  "April"
+}
+
+
+@article{H787,
+author = {Vitor T. Martins and Pedro Rangel Henriques and Daniela da Cruz},
+title = "{A}n {AST}-based tool, {S}pector, for Plagiarism Detection",
+booktitle = {Proceedings of SLATE’15},
+pages = {173--178},
+ISBN = {},
+year = {2015},
+month =   {},
+publisher = {Fundacion General UCM},
+annote = {Keywords: software, plagiarism, detection, comparison, test}
+}
+@book{ALSU07a,
+    author = "Alfred V. Aho and Monica S. Lam and Ravi Sethi and J. D. Ullman",
+    title = "Compilers Principles, Techniques and Tools",
+    edition = "Second Edition",
+    year = "2007",
+    publisher = "aw",
+    annote = "compilacao"
+    }
+
+
+@book{KR88a,
+        author = "Brian W. Kernighan and Dennis M. Ritchie",
+        title ="The C Programming Language",
+        year = "1988",
+        publisher = "Prentice-Hall"
+        }
+
+@article{RMT86a,
+    author = "Thomas Reps and Carla Marceau and Tim Teitelbaum ",
+    title = "Remote Attribute Updating for Language-based Editors",
+    journal = "Communications of the ACM",
+    year = "1986",
+    month = "Sep",
+    publisher = "ACM",
+    annote = "compilacao incremental, atributos,  ambientes prog"
+}
+@techreport{Rep92a,
+        author = "Thomas Reps",
+        title = "Scan Grammars: Parallel Attribute Evaluation Via Data-Parallelism",
+        year = "1992",
+        month = "Nov",
+        type = "Research Report",
+        institution = "University of Wisconsin - Madison"
+        }
+
+@Article{RMHCV06,
+  author = {Damijan Rebernak and Marjan Mernik and Pedro Rangel Henriques and Daniela da Cruz and Maria João Varanda},
+  title = {Specifying Languages using aspect-oriented approach: AspectLISA},
+  journal = {CIT -- Journal of Computing and Information Technology},
+  editor = {},
+  publisher = {},
+  year = {2006},
+  month = {Dec},
+  volume = {14},
+  number = {4},
+  pages = {343-350}
+}
+@InProceedings{CFPBH07d,
+  author =    {Daniela da Cruz and Ruben Fonseca and Maria Joao Varanda Pereira and Mario Beron and Pedro Rangel Henriques},
+  title =     {Comparing Generators for Language-based Tools},
+  booktitle = {CoRTA-07 - Compiler Related Techonlogies and Applications, Covilhã, Portugual},
+  year =     {2007},
+  month =     {July}
+}
+@inproceedings{alsCH10a,
+   author    = {MI-students and Daniela da Cruz and Pedro Rangel Henriques},
+   title     = {AGile - A structured-editor, analyzer, metric-evaluator and transformer for Attribute Grammars},
+   booktitle = {INForum'10 --- Simposio de Informatica (CoRTA'10 track)},
+   editor =     {Luis S. Barbosa and Miguel P. Correia},
+   publisher = {Universidade do Minho},
+   address   = {Braga, Portugal},
+   pages     = {197--200},
+   year      = {2010},
+   month     = {September}
+}
+@misc{cruz09,
+   author    = {Daniela da Cruz and Nuno Oliveira and Pedro Rangel Henriques},
+   title     = {GraAL - A Grammar Analyzer},
+   publisher = {Faculdade de Ciencias da Universidade de Lisboa},
+   year      = {2009},
+   month     = {September},
+   address   = {Lisbon, Portugal},
+   note = {Available at: http://inforum.org.pt/INForum2009/programa}
+}

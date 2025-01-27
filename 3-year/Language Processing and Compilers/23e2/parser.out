@@ -1,0 +1,208 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Grammar
+
+Rule 0     S' -> Colecao
+Rule 1     Colecao -> Tuples .
+Rule 2     Tuples -> Tuple
+Rule 3     Tuples -> Tuples Tuple
+Rule 4     Tuple -> TId ( Faces )
+Rule 5     Faces -> Faceta
+Rule 6     Faces -> Faces , Faceta
+Rule 7     Faceta -> Field = Value
+Rule 8     Field -> PAL
+Rule 9     Value -> STR
+Rule 10    TId -> PAL
+
+Terminals, with rules where they appear
+
+(                    : 4
+)                    : 4
+,                    : 6
+.                    : 1
+=                    : 7
+PAL                  : 8 10
+STR                  : 9
+error                : 
+
+Nonterminals, with rules where they appear
+
+Colecao              : 0
+Faces                : 4 6
+Faceta               : 5 6
+Field                : 7
+TId                  : 4
+Tuple                : 2 3
+Tuples               : 1 3
+Value                : 7
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . Colecao
+    (1) Colecao -> . Tuples .
+    (2) Tuples -> . Tuple
+    (3) Tuples -> . Tuples Tuple
+    (4) Tuple -> . TId ( Faces )
+    (10) TId -> . PAL
+
+    PAL             shift and go to state 5
+
+    Colecao                        shift and go to state 1
+    Tuples                         shift and go to state 2
+    Tuple                          shift and go to state 3
+    TId                            shift and go to state 4
+
+state 1
+
+    (0) S' -> Colecao .
+
+
+
+state 2
+
+    (1) Colecao -> Tuples . .
+    (3) Tuples -> Tuples . Tuple
+    (4) Tuple -> . TId ( Faces )
+    (10) TId -> . PAL
+
+    .               shift and go to state 6
+    PAL             shift and go to state 5
+
+    Tuple                          shift and go to state 7
+    TId                            shift and go to state 4
+
+state 3
+
+    (2) Tuples -> Tuple .
+
+    .               reduce using rule 2 (Tuples -> Tuple .)
+    PAL             reduce using rule 2 (Tuples -> Tuple .)
+
+
+state 4
+
+    (4) Tuple -> TId . ( Faces )
+
+    (               shift and go to state 8
+
+
+state 5
+
+    (10) TId -> PAL .
+
+    (               reduce using rule 10 (TId -> PAL .)
+
+
+state 6
+
+    (1) Colecao -> Tuples . .
+
+    $end            reduce using rule 1 (Colecao -> Tuples . .)
+
+
+state 7
+
+    (3) Tuples -> Tuples Tuple .
+
+    .               reduce using rule 3 (Tuples -> Tuples Tuple .)
+    PAL             reduce using rule 3 (Tuples -> Tuples Tuple .)
+
+
+state 8
+
+    (4) Tuple -> TId ( . Faces )
+    (5) Faces -> . Faceta
+    (6) Faces -> . Faces , Faceta
+    (7) Faceta -> . Field = Value
+    (8) Field -> . PAL
+
+    PAL             shift and go to state 12
+
+    Faces                          shift and go to state 9
+    Faceta                         shift and go to state 10
+    Field                          shift and go to state 11
+
+state 9
+
+    (4) Tuple -> TId ( Faces . )
+    (6) Faces -> Faces . , Faceta
+
+    )               shift and go to state 13
+    ,               shift and go to state 14
+
+
+state 10
+
+    (5) Faces -> Faceta .
+
+    )               reduce using rule 5 (Faces -> Faceta .)
+    ,               reduce using rule 5 (Faces -> Faceta .)
+
+
+state 11
+
+    (7) Faceta -> Field . = Value
+
+    =               shift and go to state 15
+
+
+state 12
+
+    (8) Field -> PAL .
+
+    =               reduce using rule 8 (Field -> PAL .)
+
+
+state 13
+
+    (4) Tuple -> TId ( Faces ) .
+
+    .               reduce using rule 4 (Tuple -> TId ( Faces ) .)
+    PAL             reduce using rule 4 (Tuple -> TId ( Faces ) .)
+
+
+state 14
+
+    (6) Faces -> Faces , . Faceta
+    (7) Faceta -> . Field = Value
+    (8) Field -> . PAL
+
+    PAL             shift and go to state 12
+
+    Faceta                         shift and go to state 16
+    Field                          shift and go to state 11
+
+state 15
+
+    (7) Faceta -> Field = . Value
+    (9) Value -> . STR
+
+    STR             shift and go to state 18
+
+    Value                          shift and go to state 17
+
+state 16
+
+    (6) Faces -> Faces , Faceta .
+
+    )               reduce using rule 6 (Faces -> Faces , Faceta .)
+    ,               reduce using rule 6 (Faces -> Faces , Faceta .)
+
+
+state 17
+
+    (7) Faceta -> Field = Value .
+
+    )               reduce using rule 7 (Faceta -> Field = Value .)
+    ,               reduce using rule 7 (Faceta -> Field = Value .)
+
+
+state 18
+
+    (9) Value -> STR .
+
+    )               reduce using rule 9 (Value -> STR .)
+    ,               reduce using rule 9 (Value -> STR .)
+

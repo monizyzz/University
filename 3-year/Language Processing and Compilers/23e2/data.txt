@@ -1,0 +1,3 @@
+carlos (idade = "20", partido = "Chega") 
+
+Moniz (idade = "20", partido = "IL").

@@ -1,0 +1,6 @@
+s1, s3 : rect(5, 5)
+s2 : circ(5)
+q3 : quad(3)
+
+area(s1, s2)
+perimetro(q3)

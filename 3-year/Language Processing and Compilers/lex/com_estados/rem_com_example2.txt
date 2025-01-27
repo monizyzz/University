@@ -1,0 +1,13 @@
+/* comment */ ola1
+
+/* comment****comment */ ola2 /*
+comment
+comment
+****/ ola3
+
+/***  inicio  ***/
+
+ola4
+ mais um pouco // e lixo
+FIM
+/* /* */ */
