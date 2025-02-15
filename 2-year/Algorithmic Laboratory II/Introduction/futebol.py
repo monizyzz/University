@@ -10,42 +10,34 @@ da equipa.
 
 '''
 
+# 100%
 def tabela(jogos):
-    classificacao = {}
+    dic = {}
+    for jogo in jogos:
+        if jogo[0] not in dic:
+            dic[jogo[0]] = [0,0]
+        if jogo[2] not in dic:
+            dic[jogo[2]] = [0,0]
     
     for jogo in jogos:
-        casa, marcados_casa, visitante, marcados_visitante = jogo
+        casa,gc,fora,gf = jogo
+        if (gc > gf):
+            dic[casa][0] += 3
+            dic[casa][1] += gc - gf
+            dic[fora][1] -= gc - gf
+        elif (gc == gf):
+            dic[casa][0] += 1
+            dic[fora][0] += 1
+        else:
+            dic[fora][0] += 3
+            dic[fora][1] += gf - gc
+            dic[casa][1] -= gf - gc
         
-        if casa not in classificacao:
-            classificacao[casa] = {"pontos": 0, "marcados": 0, "sofridos": 0, "diferenca_golos": 0}
-            
-        if visitante not in classificacao:
-            classificacao[visitante] = {"pontos": 0, "marcados": 0, "sofridos": 0, "diferenca_golos": 0}
-            
-        if marcados_casa == marcados_visitante:
-            classificacao[casa]["pontos"] += 1
-            classificacao[visitante]["pontos"] += 1
-        elif marcados_casa > marcados_visitante:
-            classificacao[casa]["pontos"] += 3
-        elif marcados_casa < marcados_visitante:
-            classificacao[visitante]["pontos"] += 3
-            
-        classificacao[casa]["marcados"] += marcados_casa
-        classificacao[casa]["sofridos"] += marcados_visitante
-        classificacao[casa]["diferenca_golos"] += marcados_casa - marcados_visitante
-        
-        classificacao[visitante]["marcados"] += marcados_visitante
-        classificacao[visitante]["sofridos"] += marcados_casa
-        classificacao[visitante]["diferenca_golos"] += marcados_visitante - marcados_casa
-        
-    clubes = []
-        
-    for x, y in classificacao.items():
-        clubes.append((x, y["pontos"], y["diferenca_golos"]))
     
-    clubes.sort()
-    clubes.sort(key= lambda x: (x[1], x[2]), reverse=True)
-                
-    res = [(team, pontos) for team, pontos, _ in clubes]
+    dic = sorted(dic.items(), key = lambda x: (-1*x[1][0], -1*x[1][1], x[0]))
     
-    return res
+    r = []
+    for x,y in dic:
+        r.append((x,y[0]))
+    
+    return r

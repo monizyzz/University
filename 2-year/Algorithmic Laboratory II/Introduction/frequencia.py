@@ -7,27 +7,20 @@ por ordem alfabética.
 
 '''
 
+# 100%
 def frequencia(texto):
     dic = {}
+    x = texto.split()
+    for pal in x:
+        if pal not in dic:
+            dic[pal] = 1    
+        else:
+            dic[pal] += 1
     
-    palavras = texto.split()
+    dic = sorted(dic.items(), key = lambda x:(-1*x[1],x[0]))
     
-    for char in palavras:
-        if char not in dic:
-            dic[char] = 0
-        dic[char] += 1
+    r = []
+    for x,y in dic:
+        r.append(x)
     
-    res = list(dic.items())    
-    
-    res.sort(key= lambda j: j[0])
-    res.sort(key= lambda x: x[1], reverse=True)
-            
-    final = []        
-    for o in res:
-        final.append(o[0])
-        
-    """ 
-    res = [word for word,num in final]
-    """
-    
-    return final
+    return r

@@ -17,28 +17,21 @@ nível de criticidade deverão ser listados por ordem alfabética.
 
 '''
 
+# 100%
 def cruzamentos(ruas):
-    dic = {}  
-
+    dic = {}
     for rua in ruas:
-        first = rua[0]
-        last = rua[-1]
-    
-        if first == last:
-            if first not in dic.keys():
-                dic[first] = 0
-            dic[first] += 1
+        if rua[0] not in dic:
+            dic[rua[0]] = 1
         else:
-            if first not in dic.keys():
-                dic[first] = 0
-            dic[first] += 1
-        
-            if last not in dic.keys():
-              dic[last] = 0
-            dic[last] += 1
-        
-    cruzamento = list(dic.items())
+            dic[rua[0]] += 1
+            
+        if rua[-1] not in dic:
+            dic[rua[-1]] = 1
+        else:
+            if not(rua[0] == rua[-1]):
+                dic[rua[-1]] += 1
+            
+    dic = sorted(dic.items(), key = lambda x: (x[1],x[0]))
 
-    cruzamento.sort(key=lambda x: (x[1], x[0]))
-
-    return cruzamento
+    return dic

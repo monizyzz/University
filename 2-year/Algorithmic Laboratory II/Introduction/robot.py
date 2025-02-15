@@ -16,53 +16,43 @@ A função deve retornar a lista de todas os rectangulos (tuplos com 4 inteiros)
 
 '''
 
+# 100%
+import math
+
+def verCord(ant,nov):
+    a,b,c,d = ant
+    x,y,r = nov
+    res = [a,b,c,d]
+    if x < a:
+        res[0] = x
+    if y < b:
+        res[1] = y
+    if x > c:
+        res[2] = x
+    if y > d:
+        res[3] = y
+    return ((res[0],res[1],res[2],res[3]))
+    
 def robot(comandos):
-    movs = {
-        0: (0,1),    # norte
-        1: (1,0),    # este
-        2: (0,-1),   # sul
-        3: (-1,0),   # oeste
-    }
-    
-    direcao = 0
-    mov = [0,0] # x,y
-    minX = 0
-    minY = 0
-    maxX = 0
-    maxY = 0
-    final = []
-    
-    for i in comandos:
-        if i == 'A':
-            mov[0] += movs[direcao][0] 
-            mov[1] += movs[direcao][1]
-            
-            if mov[0] > maxX:
-                maxX = mov[0]
-            elif mov[0] < minX:
-                minX = mov[0]
-                
-            if mov[1] > maxY:
-                maxY = mov[1]
-            elif mov[1] < minY:
-                minY = mov[1]
-                
-        
-        elif i == 'E':
-            direcao = (direcao - 1) % 4            
-        
-        elif i == 'D':
-            direcao = (direcao + 1) % 4
-        
-        else:
-            final.append((minX, minY, maxX, maxY))
-            direcao = 0
-            mov[0] = 0
-            mov[1] = 0
-            minX = 0
-            minY = 0
-            maxX = 0
-            maxY = 0
-            
-            
-    return final
+    res = []
+    pos = (0,0,90)
+    ant = (0,0,0,0)
+    for c in comandos:
+        x,y,r = pos
+        print(c)
+        #print("x:",x,"| y:",y,"| r:",r)
+        if c == 'A':
+            pos = (x+int(math.cos(math.radians(r))),y + int(math.sin(math.radians(r))),r)   
+            print(pos)
+            ant = verCord(ant,pos)
+        elif c == 'E':
+            pos = (x,y,(r + 90))
+        elif c == 'D':
+            pos = (x,y,(r - 90))
+        elif c == 'H':
+            pos = (0,0,90)
+            res.append(ant)
+            ant = (0,0,0,0)
+        else: 
+            res.append(ant)
+    return res

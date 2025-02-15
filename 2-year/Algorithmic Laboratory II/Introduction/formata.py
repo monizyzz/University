@@ -8,36 +8,45 @@ No caso do '{' as instruções seguintes deverão também estar identadas
 
 """
 
-# 20%
+# 100%
 def formata(codigo):
-    codigo_formatado = ""
-    indentadas = 0   
-    codigo = codigo.strip()
-    codigo = "".join(codigo.split("  "))
-    
-    print(codigo)
-    
-    for char in codigo:
-        if char == ';':
-            codigo_formatado += char + '\n' + ' ' * indentadas
-            
-        elif char == '{':
-            codigo_formatado += char + '\n' + ' ' * indentadas
-            indentadas += 1
-            
-        elif char == '}' and codigo.index(char) == len(codigo) - 1:
-            indentadas -= 1
-            codigo_formatado += '\n' + ' ' * indentadas + char
-            return codigo_formatado
-            
-        elif char == '}':
-            indentadas -= 1
-            codigo_formatado += '\n' + ' ' * indentadas + char
-            
-        elif char == ' ' and codigo[codigo.index(char) + 1] == ' ':
-            continue
-        
+    res = []
+    ind = 0
+    i = 0
+    wsc = 0
+    flag = False
+    flag2 = False # true if [-1] c != ws
+    #print(codigo)
+    for c in codigo[:-1]:
+        if c == ';':
+            flag = True
+            flag2 = False
+        if c == '}':
+            flag = True
+            flag2 = False
+            ind -= 2
+            res.append(' '*ind)
+        elif c == '{':
+            flag = True
+            flag2 = False
+            ind += 2
+        if c == ' ':
+            wsc += 1
+            if wsc == 1 and flag2 :
+                res.append(c)
+                flag2 = False
         else:
-            codigo_formatado += char
-                
-    return codigo_formatado
+            flag2 = True
+            wsc = 0
+            res.append(c) 
+        if flag:
+            res.append('\n')
+            #if i != len(codigo)-2:
+            if codigo[i+1] != '}':
+                res.append(' '*ind)
+            flag = False
+            flag2 = False
+        i += 1
+    if codigo[-1] != ' ':
+        res.append(codigo[-1])
+    return "".join(res)

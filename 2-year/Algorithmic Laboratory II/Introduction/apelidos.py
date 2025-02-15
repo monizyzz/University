@@ -6,7 +6,8 @@ devem ser listadas por ordem lexicográfica do nome completo.
 
 '''
 
+# 100%
 def apelidos(nomes):
-    nomes.sort(key=lambda x: (len(x.split()), x))
+    nomes.sort(key = lambda t: (len(t.split()), t))
     
     return nomes

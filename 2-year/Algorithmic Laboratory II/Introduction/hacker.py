@@ -17,18 +17,34 @@ neste critério, aos emails menores (em ordem lexicográfica).
 
 """
 
+# 100%
+# Cria o numero para o email dado
+def singleList(log):
+    mails = []
+    for num, mail in log:
+        if mail not in mails:
+            mails.append(mail)
+    return mails
+
+
+def numSplitter(log,mail):
+    r = ["*"] * 16
+    n = 0
+    for num, ma in log:
+        for i in range(0,len(num)):
+            if ma == mail and num[i] != '*':
+                if r[i] == '*':
+                    n += 1
+                r[i] = num[i]
+    return ("".join(r),mail,n)
+
 def hacker(log):
-    final = []
-    
-    for x,y in log:
-        if y not in [y[1] for y in final]:
-            final.append((x,y))
-        else:
-            for i,(a,b) in enumerate(final):
-                if y == b:
-                    final[i] = ("".join([c if c != '*' else s for s, c in zip(a, x)]), b)
-                    
-    final.sort(key = lambda x: x[1])
-    final.sort(key = lambda y: y[0].count('*'))
-    
-    return final
+    res = []
+    mailList = singleList(log)
+    for mail in mailList:
+        res.append(numSplitter(log,mail))
+    res.sort(key = lambda x:(-x[2],x[1]))
+    result = []
+    for x,y,z in res:
+        result.append((x,y))
+    return result

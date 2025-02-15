@@ -9,21 +9,21 @@ e deverá devolver a lista ordenada de todos os livros com ISBNs inválidos.
 
 '''
 
+# 100%
 def isbn(livros):
-    final = []
-    
-    for x,y in livros.items():
-        str_lista = list(y)
-        num_lista = [int(j) for j in str_lista]
-        
-        mult_um = [a for a in num_lista [0::2]]
-        mult_tres = [b*3 for b in num_lista [1::2]]
-        
-        soma = sum(mult_um) + sum(mult_tres)
-        
-        if soma%10 != 0:
-            final.append(x)
+    res = []
+    for livro in livros:
+        n = 0
+        tres = False
+        for num in livros[livro]:
+            if tres:
+                n += 3*int(num)
+            else:
+                n += int(num)
+            tres = not tres
             
-    final.sort()        
-    
-    return final
+        #print("livros[livro][-1]:",livros[livro][-1], " | ",livros[livro][-1],"n:", n,  " | ","n % 10:", n % 10)
+        if (n % 10) != 0:
+            res.append(livro)
+    res.sort()    
+    return res
