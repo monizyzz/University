@@ -33,5 +33,11 @@ def cruzamentos(ruas):
                 dic[rua[-1]] += 1
             
     dic = sorted(dic.items(), key = lambda x: (x[1],x[0]))
+    
+    """ Or
+    r = [(c,n) for c,n in dic.items()]
+    
+    r.sort(key = lambda x: (x[1],x[0]))
+    """
 
     return dic

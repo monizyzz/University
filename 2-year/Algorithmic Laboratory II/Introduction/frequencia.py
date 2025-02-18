@@ -22,5 +22,9 @@ def frequencia(texto):
     r = []
     for x,y in dic:
         r.append(x)
+        
+    """ Or
+    r = [x for x,y in dic]
+    """
     
     return r

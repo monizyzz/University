@@ -39,5 +39,9 @@ def tabela(jogos):
     r = []
     for x,y in dic:
         r.append((x,y[0]))
+        
+    """ Or
+    r = [(x, y[0]) for x,y in clas]
+    """
     
     return r

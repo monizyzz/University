@@ -48,3 +48,30 @@ def hacker(log):
     for x,y,z in res:
         result.append((x,y))
     return result
+
+# Or
+
+def hacker(log):
+    dic = {}
+    em = []
+    
+    for c,e in log:
+        if e not in log:
+            dic[e] = list(c)
+        
+        if e not in em:
+            em.append(e)
+    
+    for e in em:
+        for x,y in log:
+            if e == y:
+                for i,c in enumerate(x):
+                    if c != '*':
+                        dic[e][i] = c
+    
+
+    res = sorted(dic.items(), key = lambda x: (x[1].count('*'),x[0]))
+    
+    r = [(''.join(y),x) for x,y in res]
+    
+    return r

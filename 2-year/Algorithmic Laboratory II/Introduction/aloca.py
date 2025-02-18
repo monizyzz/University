@@ -59,3 +59,25 @@ def aloca(prefs):
             alunos_nao_alocados.append(aluno)
     
     return alunos_nao_alocados
+
+# or 
+
+def aloca(prefs):
+    alSemProjeto = []
+    al = []
+    proj = []
+    
+    for a in prefs:
+        al.append(a)
+        
+    al.sort()
+    
+    alSemProjeto = list(al)
+        
+    for a in al:
+        for p in prefs[a]:
+            if p not in proj and a in alSemProjeto:
+                proj.append(p)
+                alSemProjeto.remove(a)
+            
+    return alSemProjeto
