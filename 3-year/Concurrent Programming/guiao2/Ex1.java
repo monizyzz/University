@@ -1,15 +1,15 @@
-package guiao1;
+package guiao2;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Ex2v2 {
-    static int N = 100;
-    static int I = 100;
+public class Ex1 {
+    static int N = 1000;
+    static int I = 1000;
 
     static class Counter {
 
-        public int value = 0;
+        private int value = 0;
 
         public synchronized void increment() {
             value++;
@@ -31,24 +31,22 @@ public class Ex2v2 {
 
         @Override
         public void run() {
-            for (int i = 1; i <= I; i++) {
-                counter.increment();
+            for (int i = 0; i < I; i++) {
+                synchronized (counter) {
+                    counter.increment();
+                }
             }
             
         }
     }
 
     public static void main(String[] args) throws InterruptedException {
-        Counter cnt = new Counter(); // shared resource
+        Counter counter = new Counter(); // shared resource
 
         List<Thread> list = new ArrayList<>();
 
         for (int i = 0; i < N; i++) {
-            Thread t = new Thread(() -> {
-                for (int j = 0; j < I; j++) {
-                    cnt.value++;
-                }
-            });
+            Thread t = new Thread(new Worker(counter));
 
             t.start();
             list.add(t);
@@ -58,7 +56,7 @@ public class Ex2v2 {
             t.join();
         }
 
-        System.out.println("Counter: " + cnt.getCount());
+        System.out.println("Counter: " + counter.getCount());
         System.out.println("Main thread finished");
     }
 }
