@@ -102,6 +102,81 @@ void drawCylinder(float radius, float height, int slices) {
 
 }
 
+// Or
+
+void drawCylinderWithGLTriangles(float radius, float height, int slices) {
+    float angleStep = (360.0f/slices) * M_PI / 180.0f;
+    height *= 0.5f;
+
+    // Draw the sides of the cylinder
+    glBegin(GL_TRIANGLES);
+    for (int i = 0; i < slices; ++i) {
+        float angle1 = i * angleStep;
+        float angle2 = (i + 1) * angleStep;
+
+        // First vertex coordinates		
+        px = radius * cos(angle1);
+        pz = radius * -sin(angle1);
+        
+        // First triangle
+        py = height;
+        glVertex3f(px, py, pz);    // Top vertex 1
+        
+        py = -height;
+        glVertex3f(px, py, pz);    // Bottom vertex 1
+        
+        // Second vertex coordinates
+        px = radius * cos(angle2);
+        pz = radius * -sin(angle2);
+        
+        py = height;
+        glVertex3f(px, py, pz);    // Top vertex 2
+
+        // Second triangle
+        glVertex3f(px, py, pz);    // Top vertex 2
+        
+        px = radius * cos(angle1);
+        pz = radius * -sin(angle1);
+        py = -height;
+        glVertex3f(px, py, pz);    // Bottom vertex 1
+        
+        px = radius * cos(angle2);
+        pz = radius * -sin(angle2);
+        glVertex3f(px, py, pz);    // Bottom vertex 2
+    
+
+    // Draw the bottom circle
+        px = 0.0f;
+        py = -height;
+        pz = 0.0f;
+        glVertex3f(px, py, pz);    // Center
+
+        px = radius * cos(angle1);
+        pz = radius * sin(angle1);
+        glVertex3f(px, py, pz);    // First point on circumference
+
+        px = radius * cos(angle2);
+        pz = radius * sin(angle2);
+        glVertex3f(px, py, pz);    // Next point on circumference
+
+
+    // Draw the top circle
+		px = 0.0f;
+		py = height;
+		pz = 0.0f;
+		glVertex3f(px, py, pz);    // Center
+
+		px = radius * cos(angle1);
+		pz = radius * -sin(angle1);
+		glVertex3f(px, py, pz);    // First point on circumference
+
+		px = radius * cos(angle2);
+		pz = radius * -sin(angle2);
+		glVertex3f(px, py, pz);    // Next point on circumference
+    }
+    glEnd();
+}
+
 
 void renderScene(void) {
 
@@ -129,7 +204,8 @@ void renderScene(void) {
 	glVertex3f(0.0f, 0.0f, 100.0f);
 	glEnd();
 
-	drawCylinder(1,3,30);
+	//drawCylinder(1, 3, 30);
+	drawCylinderWithGLTriangles(1, 3, 30);
 
 	// End of frame
 	glutSwapBuffers();
