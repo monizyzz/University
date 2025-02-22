@@ -1,5 +1,5 @@
 CMakeFiles/class1.dir/main.cpp.o: \
- /home/bernardomoniz/Code/University/3-year/Computer\ Graphics/code/main.cpp \
+ /home/bernardomoniz/Code/University/3-year/Computer\ Graphics/class1/main.cpp \
  /usr/include/stdc-predef.h /usr/include/GL/glut.h \
  /usr/include/GL/freeglut_std.h /usr/include/GL/gl.h \
  /usr/include/GL/glext.h /usr/include/KHR/khrplatform.h \

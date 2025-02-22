@@ -47,8 +47,9 @@ void renderScene(void)
 	//glutWireTeapot(1);
 	//glutSolidTeapot(1);
 	//glutSolidCube(1);
-	glutWireTorus(0.3, 1, 30, 30);
-	
+	//glutWireTorus(0.3, 1, 30, 30);
+	glutWireSphere(1, 10, 10);
+
 	// End of frame
 	glutSwapBuffers();
 }

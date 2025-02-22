@@ -55,7 +55,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/bernardomoniz/Code/University/3-year/Computer Graphics/code/build"
+			"value" : "/home/bernardomoniz/Code/University/3-year/Computer Graphics/class1/build"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -175,7 +175,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "CMAKE_CXX_COMPILER_AR-NOTFOUND"
+			"value" : "/usr/bin/gcc-ar-13"
 		},
 		{
 			"name" : "CMAKE_CXX_COMPILER_RANLIB",
@@ -191,7 +191,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "CMAKE_CXX_COMPILER_RANLIB-NOTFOUND"
+			"value" : "/usr/bin/gcc-ranlib-13"
 		},
 		{
 			"name" : "CMAKE_CXX_FLAGS",
@@ -283,11 +283,11 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "No help, variable specified on the command line."
+					"value" : "C compiler"
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/usr/bin/c89-gcc"
+			"value" : "/usr/bin/cc"
 		},
 		{
 			"name" : "CMAKE_C_COMPILER_AR",
@@ -303,7 +303,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "CMAKE_C_COMPILER_AR-NOTFOUND"
+			"value" : "/usr/bin/gcc-ar-13"
 		},
 		{
 			"name" : "CMAKE_C_COMPILER_RANLIB",
@@ -319,7 +319,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "CMAKE_C_COMPILER_RANLIB-NOTFOUND"
+			"value" : "/usr/bin/gcc-ranlib-13"
 		},
 		{
 			"name" : "CMAKE_C_FLAGS",
@@ -555,7 +555,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/home/bernardomoniz/Code/University/3-year/Computer Graphics/code/build/CMakeFiles/pkgRedirects"
+			"value" : "/home/bernardomoniz/Code/University/3-year/Computer Graphics/class1/build/CMakeFiles/pkgRedirects"
 		},
 		{
 			"name" : "CMAKE_GENERATOR",
@@ -615,7 +615,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/bernardomoniz/Code/University/3-year/Computer Graphics/code"
+			"value" : "/home/bernardomoniz/Code/University/3-year/Computer Graphics/class1"
 		},
 		{
 			"name" : "CMAKE_INSTALL_PREFIX",
@@ -1951,7 +1951,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/home/bernardomoniz/Code/University/3-year/Computer Graphics/code/build"
+			"value" : "/home/bernardomoniz/Code/University/3-year/Computer Graphics/class1/build"
 		},
 		{
 			"name" : "class1_IS_TOP_LEVEL",
@@ -1975,7 +1975,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/home/bernardomoniz/Code/University/3-year/Computer Graphics/code"
+			"value" : "/home/bernardomoniz/Code/University/3-year/Computer Graphics/class1"
 		},
 		{
 			"name" : "pkgcfg_lib_PC_GLUT_glut",

@@ -54,10 +54,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = "/home/bernardomoniz/Code/University/3-year/Computer Graphics/code"
+CMAKE_SOURCE_DIR = "/home/bernardomoniz/Code/University/3-year/Computer Graphics/class1"
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = "/home/bernardomoniz/Code/University/3-year/Computer Graphics/code/build"
+CMAKE_BINARY_DIR = "/home/bernardomoniz/Code/University/3-year/Computer Graphics/class1/build"
 
 #=============================================================================
 # Directory level rules for the build root directory
@@ -81,14 +81,14 @@ clean: CMakeFiles/class1.dir/clean
 CMakeFiles/class1.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/class1.dir/build.make CMakeFiles/class1.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/class1.dir/build.make CMakeFiles/class1.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir="/home/bernardomoniz/Code/University/3-year/Computer Graphics/code/build/CMakeFiles" --progress-num=1,2 "Built target class1"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir="/home/bernardomoniz/Code/University/3-year/Computer Graphics/class1/build/CMakeFiles" --progress-num=1,2 "Built target class1"
 .PHONY : CMakeFiles/class1.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/class1.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start "/home/bernardomoniz/Code/University/3-year/Computer Graphics/code/build/CMakeFiles" 2
+	$(CMAKE_COMMAND) -E cmake_progress_start "/home/bernardomoniz/Code/University/3-year/Computer Graphics/class1/build/CMakeFiles" 2
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/class1.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start "/home/bernardomoniz/Code/University/3-year/Computer Graphics/code/build/CMakeFiles" 0
+	$(CMAKE_COMMAND) -E cmake_progress_start "/home/bernardomoniz/Code/University/3-year/Computer Graphics/class1/build/CMakeFiles" 0
 .PHONY : CMakeFiles/class1.dir/rule
 
 # Convenience name for target.

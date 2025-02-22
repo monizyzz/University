@@ -156,9 +156,19 @@ void processKeys(unsigned char c, int xx, int yy) {
 			glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
 			break;
 
+		case '+':
+			rad -= 0.1f;
+			break;
+
+		case '-':
+			rad += 0.1f;
+			break;
+
 		default:
 			break;
 	}
+
+	updateCameraPosition();
 
 	glutPostRedisplay();
 }

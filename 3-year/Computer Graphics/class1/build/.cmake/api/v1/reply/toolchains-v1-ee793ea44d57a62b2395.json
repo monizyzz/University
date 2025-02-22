@@ -33,7 +33,7 @@
 						"gcc_s"
 					]
 				},
-				"path" : "/usr/bin/c89-gcc",
+				"path" : "/usr/bin/cc",
 				"version" : "13.3.0"
 			},
 			"language" : "C",
