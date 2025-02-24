@@ -204,8 +204,8 @@ void renderScene(void) {
 	glVertex3f(0.0f, 0.0f, 100.0f);
 	glEnd();
 
-	//drawCylinder(1, 3, 30);
-	drawCylinderWithGLTriangles(1, 3, 30);
+	drawCylinder(1, 3, 30);
+	//drawCylinderWithGLTriangles(1, 3, 30);
 
 	// End of frame
 	glutSwapBuffers();
@@ -262,9 +262,15 @@ void processSpecialKeys(int key, int xx, int yy) {
 			break;
 		case GLUT_KEY_UP:
 			beta += 0.1f;
+			if (beta > M_PI / 2.0f) {
+                beta = M_PI / 2.0f; 
+            }
 			break;
 		case GLUT_KEY_DOWN:
 			beta -= 0.1f;
+			if (beta < -M_PI / 2.0f) {
+                beta = -M_PI / 2.0f;
+            }
 			break;
 	}
 	
