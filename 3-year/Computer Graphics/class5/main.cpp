@@ -12,7 +12,7 @@
 
 float alfa = 0.0f, beta = 0.5f, radius = 100.0f;
 float camX, camY, camZ;
-float a = 0.1f, b = 0.05f, step = 0.0f;
+float a = 0.0f, b = 0.0f;
 
 void spherical2Cartesian() {
 
@@ -56,7 +56,7 @@ void createPinkTorus() {
 }
 
 
-void createCowBoys(float a, float step) {
+void createCowBoys(float a) {
 	glColor3f(0.0f, 0.0f, 1.0f);
     int numBlueTeapots = 8;
     float rc = 15.0f;
@@ -66,8 +66,8 @@ void createCowBoys(float a, float step) {
 		float z = rc * cos(angle + a);
 
         glPushMatrix();
-		glRotatef(angle + step, 0.0f, 1.0f, 0.0f);
         glTranslatef(x, 1.0f, z);
+		glRotatef((angle + a) * 180 / M_PI - 90, 0.0f, 1.0f, 0.0f);
         glutSolidTeapot(1.0);
         glPopMatrix();
     }
@@ -86,6 +86,7 @@ void createIndians(float b) {
 
         glPushMatrix();
         glTranslatef(x, 1.0f, z);
+		glRotatef((angle + b) * 180 / M_PI, 0.0f, 1.0f, 0.0f);
         glutSolidTeapot(1.0);
         glPopMatrix();
     }
@@ -159,14 +160,10 @@ void renderScene(void) {
 
 	a -= 0.01f;
 	b += 0.01f;
-	step += 0.01f;
-    if (step >= 360.0f) {
-        step -= 360.0f;
-    }
 
 	createPinkTorus();
 
-	createCowBoys(a, step);
+	createCowBoys(a);
 
 	createIndians(b);
 
