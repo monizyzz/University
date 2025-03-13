@@ -93,7 +93,7 @@ void createIndians(float b) {
 }
 
 void createTrees() {
-	int numTrees = rand() % 150 + 75; // Número aleatório de árvores entre 75 e 225 | rand - returns a number between 0 and RAND_MAX
+	int numTrees = rand() % 150 + 200; // Número aleatório de árvores entre 200 e 350 | rand - returns a number between 0 and RAND_MAX
 	float minR = 50.0f;
     float maxR = 100.0f;
 	for (int i = 0; i < numTrees; ++i) {
@@ -153,10 +153,7 @@ void renderScene(void) {
 	
 	// put code to draw scene in here
 
-
-	// void glRotatef(float ang, float x, float y, float z); // ang in degrees
-
-	srand(100); // start the random number sequence
+	srand(10); // start the random number sequence
 
 	a -= 0.01f;
 	b += 0.01f;
