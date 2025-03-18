@@ -39,15 +39,26 @@ class Warehouse {
         }
     }
         
-    // Errado se faltar algum produto...
+
     public void consume(Set<String> items) throws InterruptedException {
         lock.lock();
         try {
-            for (String s : items) {
-                Product p = get(s);
-                while (p.quantity == 0) {
+            boolean allAvailable = false;
+            while (!allAvailable) {
+                allAvailable = true;
+                for (String s : items) {
+                    Product p = get(s);
+                    // só é chamado quando um dos produtos não tem stock
+                    while (p.quantity == 0) {
                         p.cond.await();
+                        allAvailable = false;
+                        break;
                     }
+                }
+            }
+
+            for (String item : items) {
+                Product p = get(s);
                 p.quantity--;
             }
             
