@@ -1,16 +1,37 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Main {
 
+    public static class Round {
+        Map<Integer, Integer> choices = new HashMap<>();
+    }
+
     public static class Agreement {
         private int n;
+        private int count = 0;
+        private Round round = new Round();
 
         public Agreement(int n) {
             this.n = n;
         }
 
         int propose(int choice) throws InterruptedException {
+            Round myRound = round;
+            myRound.choices.put(choice, myRound.choices.getOrDefault(choice, 0) + 1);
+
+            count++;
+            if (count == n) {
+                notifyAll();
+                count = 0;
+                round = new Round();
+            } else {
+                while (myRound == round) {
+                    wait();
+                }
+            }
 
             return choice;
         }
@@ -19,22 +40,22 @@ public class Main {
     public static class Barrier {
         private int n;
         private int count = 0;
-        private int currRound = 1;
+        private Round round = new Round();
 
         public Barrier(int n) {
             this.n = n;
         }
 
         synchronized void await() throws InterruptedException {
-            int myRound = currRound;
+            Round myRound = round;
             count++;
 
             if (count == n) {
                 notifyAll();
                 count = 0;
-                currRound++;
+                round = new Round();
             } else {
-                while (myRound == currRound) {
+                while (myRound == round) {
                     wait();
                 }
             }

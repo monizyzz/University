@@ -2,11 +2,13 @@ package guiao3;
 
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 class Bank {
 
     private static class Account {
         private int balance;
+        private ReentrantLock lock = new ReentrantLock();
         Account(int balance) { this.balance = balance; }
         int balance() { return balance; }
         boolean deposit(int value) {
@@ -46,33 +48,10 @@ class Bank {
         try {
             c = map.remove(id);
             if (c == null)
-                    return 0;
+                return 0;
             c.lock.lock();
-
         } finally {
             lock.writeLock().unlock();
-        }
-
-
-        try {
-            return c.balance();
-        } finally {
-            c.lock.unlock();
-        }
-    }
-
-    // account balance; 0 if no such account
-    public int balance(int id) {
-        Account c;
-        lock.lock();
-        try {
-            c = map.get(id);
-            if (c == null)
-                    return 0;
-            
-            c.lock.lock();
-        } finally {
-            lock.unlock();
         }
 
         try {
@@ -90,37 +69,13 @@ class Bank {
             c = map.get(id);
             if (c == null)
                 return false;
-    
             c.lock.lock();
-
         } finally {
             lock.readLock().unlock();
-        } 
-
+        }
 
         try {
             return c.deposit(value);
-        } finally {
-            c.lock.unlock();
-        }
-    }
-
-    // withdraw; fails if no such account or insufficient balance
-    public boolean withdraw(int id, int value) {
-        Account c;
-        lock.lock();
-        try {
-            c = map.get(id);
-            if (c == null)
-            return false;
-            
-            c.lock.lock();
-        } finally {
-            lock.unlock();
-        }
-        
-        try {
-            return c.withdraw(value);
         } finally {
             c.lock.unlock();
         }
@@ -134,36 +89,34 @@ class Bank {
         try {
             cfrom = map.get(from);
             cto = map.get(to);
-            if (cfrom == null || cto ==  null)
+            if (cfrom == null || cto == null)
                 return false;
-            
-                if (from < to) {
-                    cfrom.lock.lock();
-                    cto.lock.lock();
-                } else {
-                    cto.lock.lock();
-                    cfrom.lock.lock();
-                }
-            
-            } finally {
-                lock.readLock().unlock();
-            }
-        
 
-            try {
-                return cfrom.withdraw(value) && cto.deposit(value);
-            } finally {
-                cfrom.lock.unlock();
-                cto.lock.unlock();
+            if (from < to) {
+                cfrom.lock.lock();
+                cto.lock.lock();
+            } else {
+                cto.lock.lock();
+                cfrom.lock.lock();
             }
+        } finally {
+            lock.readLock().unlock();
+        }
+
+        try {
+            return cfrom.withdraw(value) && cto.deposit(value);
+        } finally {
+            cfrom.lock.unlock();
+            cto.lock.unlock();
+        }
     }
 
     // sum of balances in set of accounts; 0 if some does not exist
     public int totalBalance(int[] ids) {
-        List<Account> accounts = new ArrayList<Account>();
+        List<Account> accounts = new ArrayList<>();
         Arrays.sort(ids);
 
-        lock.lock();
+        lock.readLock().lock();
         try {
             for (int i : ids) {
                 Account c = map.get(i);
@@ -175,13 +128,16 @@ class Bank {
             for (Account account : accounts) {
                 account.lock.lock();
             }
-
         } finally {
-            lock.unlock();
+            lock.readLock().unlock();
         }
-        
+
         try {
-            accounts.stream().mapToInt(x -> x.balance).sum();
+            int total = 0;
+            for (Account account : accounts) {
+                total += account.balance();
+            }
+            return total;
         } finally {
             for (Account account : accounts) {
                 account.lock.unlock();
