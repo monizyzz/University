@@ -49,7 +49,7 @@ class Warehouse {
                 for (String s : items) {
                     Product p = get(s);
                     // só é chamado quando um dos produtos não tem stock
-                    while (p.quantity == 0) {
+                    if (p.quantity == 0) {
                         p.cond.await();
                         allAvailable = false;
                         break;
