@@ -8,6 +8,57 @@ Assuma que cada rota funciona nos dois sentidos.
 
 '''
 
+# 100%
+def fw(adj):
+    dist = {}
+    for o in adj:
+        dist[o] = {}
+        for d in adj:
+            if o == d:
+                dist[o][d] = 0
+            elif d in adj[o]:
+                dist[o][d] = adj[o][d]
+            else:
+                dist[o][d] = float("inf")
+    for k in adj:
+        for o in adj:
+            for d in adj:
+                if dist[o][k] + dist[k][d] < dist[o][d]:
+                    dist[o][d] = dist[o][k] + dist[k][d]
+    return dist
+    
+def build(rotas):
+    grafo = {}
+    
+    for rota in rotas:
+        for i,c in enumerate(rota):
+            if type(c) == str:
+                if c not in grafo:
+                    grafo[c] = {}
+                    
+                if len(rota)-1 != i and rota[i+2] not in grafo:
+                    grafo[rota[i+2]] = {}
+                    
+                if len(rota)-1 != i:
+                        grafo[c][rota[i+2]] = rota[i+1] # custo
+                        grafo[rota[i+2]][c] = rota[i+1]
+                    
+    return grafo
+
+
+
+def viagem(rotas,o,d):
+    if o == d:
+        return 0
+    
+    grafo = build(rotas)
+    
+    r = fw(grafo)
+
+    return r[o][d]
+
+# or
+
 def dijkstra(adj,o):
     pai = {}
     dist = {}
@@ -25,35 +76,32 @@ def dijkstra(adj,o):
                 dist[d] = dist[v] + adj[v][d]
     return dist
     
-def build(arestas):
-    adj = {}
+def build(rotas):
+    grafo = {}
     
-    for o,d,p in arestas:
-        if o not in adj:
-            adj[o] = {}
-        if d not in adj:
-            adj[d] = {}
-        adj[o][d] = p
-        adj[d][o] = p
-        
-    return adj
+    for rota in rotas:
+        for i,c in enumerate(rota):
+            if type(c) == str:
+                if c not in grafo:
+                    grafo[c] = {}
+                    
+                if i+2 < len(rota) and rota[i+2] not in grafo:
+                    grafo[rota[i+2]] = {}
+                    
+                if i+2 < len(rota):
+                    grafo[c][rota[i+2]] = rota[i+1] # custo
+                    grafo[rota[i+2]][c] = rota[i+1]
+                    
+    return grafo
+
+
 
 def viagem(rotas,o,d):
     if o == d:
         return 0
     
-    rotas_simplificadas = []
+    grafo = build(rotas)
     
-    for rota in rotas:
-        for i in range(0, len(rota) - 1, 2):
-            origem = rota[i]
-            custo = rota[i+1]
-            destino = rota[i+2]
-            
-            rotas_simplificadas.append((origem, destino, custo))
-            
-    adj = build(rotas_simplificadas)
-    
-    dist = dijkstra(adj,o)
-    
-    return (dist[d])
+    r = dijkstra(grafo,o)
+
+    return r[d]

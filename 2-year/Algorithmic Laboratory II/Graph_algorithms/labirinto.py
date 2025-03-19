@@ -9,6 +9,7 @@ atravesar o labirinto. As instruções podem ser 'N','S','E','O'.
 
 '''
 
+# 100%
 def bfs(adj, o, d):
     pai = {}
     vis = {o}
@@ -23,30 +24,29 @@ def bfs(adj, o, d):
         for d in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
             xn, yn  = xo + d[0], yo + d[1]
             
-            if (xn, yn) not in vis and 0 <= xn < len(adj) and 0 <= yn < len(adj[0]) and adj[xn][yn] != '#':
+            if (xn, yn) not in vis and 0 <= xn < len(adj) and 0 <= yn < len(adj[0]) and adj[yn][xn] != '#':
                 vis.add((xn, yn))
                 pai[(xn, yn)] = v
                 queue.append((xn, yn))
     return pai
     
-    
 def direcoes(possiveis, dest):
     lista = []
     atual = dest
     
-    while atual in possiveis.keys():
+    while atual in possiveis:
         pai = possiveis[atual]
         
-        if pai[0] == atual[0] and pai[1] < atual[1]: 
+        if pai[1] == atual[1] and pai[0] < atual[0]: 
             lista.append('E')
             
-        elif pai[0] == atual[0] and pai[1] > atual[1]:
+        elif pai[1] == atual[1] and pai[0] > atual[0]:
             lista.append('O')
             
-        elif pai[1] == atual[1] and pai[0] < atual[0]:
+        elif pai[0] == atual[0] and pai[1] < atual[1]:
             lista.append('S')
             
-        elif pai[1] == atual[1] and pai[0] > atual[0]:
+        elif pai[0] == atual[0] and pai[1] > atual[1]:
             lista.append('N')
         
         atual = pai
@@ -58,10 +58,7 @@ def direcoes(possiveis, dest):
 def caminho(mapa):
     o = (0,0)
     d = (len(mapa)-1, len(mapa)-1)
-    if o == d:
-        return ""
-    
+   
     possiveis = bfs(mapa, o, d)
-    res = direcoes(possiveis, d)
     
-    return res
+    return direcoes(possiveis, d)

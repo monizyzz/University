@@ -10,6 +10,7 @@ O robot só consegue movimentar-se na horizontal ou na vertical.
 
 '''
 
+# 100%
 def bfs(adj,o):
     pai = {}
     vis = {o}
@@ -21,43 +22,25 @@ def bfs(adj,o):
                 vis.add(d)
                 pai[d] = v
                 queue.append(d)
-    return vis
+    return len(vis)
     
-def verifica_caminhos(mapa,i,j):
-    array = []
     
-
-    if j+1 < len(mapa[0]) and mapa[i][j+1] == '.':
-        array.append((i,j+1))
-    
-    if j-1 >= 0 and mapa[i][j-1] == '.':
-            array.append((i,j-1))
-    
-    if i+1 < len(mapa) and mapa[i+1][j] == '.':
-            array.append((i+1,j))
-    
-    if i-1 >= 0 and mapa[i-1][j] == '.':
-            array.append((i-1,j))
-    
-    return array
-
-
-def area(p,mapa):
+def build(mapa):
     adj = {}
     
-    if mapa == []:
-        return 0
-        
-    for i in range(len(mapa)):
-        for j in range(len(mapa[i])):
-            ponto = (i,j)
-            if ponto not in adj and mapa[i][j] == '.':
-                adj[ponto] = set()
-                caminhos = verifica_caminhos(mapa,i,j)
-                adj[ponto] = caminhos
+    for y,row in enumerate(mapa):
+        for x,char in enumerate(row):
+            if char != '*' and (x,y) not in adj:
+                adj[(x,y)] = set()
                 
-                
+                for i,j in [(-1,0), (0,-1), (1,0), (0,1)]:
+                    xn, yn = x + i, y + j
+                    
+                    if 0 <= xn < len(mapa) and 0 <= yn < len(mapa) and mapa[yn][xn] != '*':
+                        adj[(x,y)].add((xn,yn))   
+            
+    return adj
 
-    d = bfs(adj,p)
-    
-    return len(d)
+def area(p,mapa):
+    adj = build(mapa)
+    return bfs(adj,p)

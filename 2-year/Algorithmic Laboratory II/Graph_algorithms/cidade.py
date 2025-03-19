@@ -12,6 +12,7 @@ identificado pelo primeiro (e último) caracter do respectivo nome.
 
 '''
 
+# 100%
 def fw(adj):
     dist = {}
     for o in adj:
@@ -29,42 +30,40 @@ def fw(adj):
                 if dist[o][k] + dist[k][d] < dist[o][d]:
                     dist[o][d] = dist[o][k] + dist[k][d]
     return dist
-    
-    
-def build(arestas):
+ 
+ 
+def build(ruas):
     adj = {}
     
-    for o,d,p in arestas:
-        if o != d:
-            if o not in adj:
-                adj[o] = {}
-            if d not in adj:
-                adj[d] = {}
+    for rua in ruas:
+        o, d = rua[0], rua[-1]
+        custo = len(rua)
+        
+        if o not in adj:
+            adj[o] = {}
             
-            if d not in adj[o].keys() or adj[o][d] > p:
-                adj[o][d] = p
-                adj[d][o] = p
+        if d not in adj:
+            adj[d] = {}
+            
+        
+        if d not in adj[o] or adj[o][d] > custo:
+            adj[o][d] = custo
+            
+            
+        if o not in adj[d] or adj[d][o] > custo:
+            adj[d][o] = custo
         
     return adj
     
- 
-def tamanho(ruas):
-    lista = []
-    maior = 0
-    
-    for rua in ruas:
-        lista.append((rua[0],rua[-1],len(rua)))
-        
-    adj = build(lista)
-    
-    dist = fw(adj)
-    
-    for letra in dist:
-        
-        for atual in dist[letra]:
-            tamanho = dist[letra][atual]
             
-            if maior < tamanho:
-                maior = tamanho
+def tamanho(ruas):
+    grafo = build(ruas)
     
-    return maior
+    res = 0
+    
+    for c in fw(grafo).values():
+        for custo in c.values():
+            if custo > res:
+                res = custo
+    
+    return res

@@ -12,21 +12,51 @@ autores com o mesmo número, lexicograficamente.
 
 '''
 
-def erdos(artigos,n):
-    vis = {"Paul Erdos":0}
-    queue = ["Paul Erdos"]
-    
+# 100%
+def bfs(adj,o):
+    dist = { o: 0 }
+    vis = {o}
+    queue = [o]
     while queue:
         v = queue.pop(0)
-        for autores in artigos:
-            for autor in artigos[autores]:
-                if v == autor:
-                    for x in artigos[autores]:
-                        if x not in vis:
-                            vis[x] = vis[v] + 1
-                            queue.append(x)
+        for d in adj[v]:
+            if d not in vis:
+                vis.add(d)
+                dist[d] = dist[v] + 1
+                queue.append(d)
+    return dist
 
-    lista = [(x,y) for x,y in vis.items() if y <= n]
-    lista.sort(key=lambda x: (x[1],x[0]))
-    final = [x[0] for x in lista]
+def aux(artigos):
+    adj = {}
+    
+    for auths in artigos.values():
+        for auth in auths:
+            if auth not in adj:
+                adj[auth] = set()
+    return adj
+
+def build(adj, artigos):
+    grafo = adj
+    
+    for a in adj:
+        for auths in artigos.values():
+            for auth in auths:
+                if a in auths and a != auth:
+                    grafo[a].add(auth)
+    
+    return grafo
+
+def erdos(artigos,n):
+    if artigos == {} or n <= 0:
+        return ["Paul Erdos"]
+    
+    adj = aux(artigos)
+    grafo = build(adj, artigos)
+    
+    lista = bfs(grafo, "Paul Erdos")
+    
+    res = sorted(lista.items(), key = lambda x: (x[1], x[0]))
+    
+    final = [a for a,c in res if c <= n]
+    
     return final

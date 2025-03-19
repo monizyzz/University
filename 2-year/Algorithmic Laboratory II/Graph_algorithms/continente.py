@@ -8,6 +8,7 @@ A função deverá devolver o tamanho do maior continente.
 
 '''
 
+# 100%
 def bfs(adj,o):
     pai = {}
     vis = {o}
@@ -20,69 +21,39 @@ def bfs(adj,o):
                 pai[d] = v
                 queue.append(d)
     return vis
-
-# from Root.src.grafos import bfs
-
-def maior(vizinhos):
+    
+    
+def aux(viz):
     adj = {}
-    big = 0
     
-    if len(vizinhos) == 0:
-        return 0
-    
-    for continente in vizinhos:
-        if continente[0] not in adj:
-            adj[continente[0]] = set()
-        for pais in continente[1:]:
+    for cont in viz:
+        for pais in cont:
             if pais not in adj:
                 adj[pais] = set()
-                
-            adj[continente[0]].add(pais)
-            adj[pais].add(continente[0])
-
-
-    for x in adj.keys():
-        p = bfs(adj, x)
-        
-        if big < len(p):
-            big = len(p)
+              
+    return adj
     
-    return big 
+def build(viz,adj):
 
-# or 
-
-def bfs(adj,o):
-    pai = {}
-    vis = {o}
-    queue = [o]
-    while queue:
-        v = queue.pop(0)
-        for d in adj[v]:
-            if d not in vis:
-                vis.add(d)
-                pai[d] = v
-                queue.append(d)
-    return pai
-
-
+    for pais in adj:
+        for cont in viz:
+            for p in cont:
+                if pais != p and pais in cont:
+                    adj[p].add(pais)
+                    
+    return adj
 
 def maior(vizinhos):
-    if (len(vizinhos)== 0): return 0
-    adj = {}
+    maxi = 0
+
+    adj = aux(vizinhos)
     
-    for continentes in vizinhos:
-        for i in range(len(continentes) - 1):
-            if continentes[i] not in adj:
-                adj[continentes[i]] = set()
-            if continentes[i+1] not in adj:
-                adj[continentes[i+1]] = set()
-            adj[continentes[i]].add(continentes[i+1])
-            adj[continentes[i+1]].add(continentes[i])
-    maior = 0 
-    for x in adj:
-        d = bfs(adj,x)
-        if(len(d) > maior):
-          maior = len(d) 
-
-
-    return maior + 1
+    grafo = build(vizinhos, adj)
+    print(grafo)
+    
+    for p in grafo:
+        vis = bfs(grafo,p)
+        if len(vis) > maxi:
+            maxi = len(vis)
+    
+    return maxi

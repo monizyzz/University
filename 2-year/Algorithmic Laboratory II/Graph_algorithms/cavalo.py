@@ -8,30 +8,30 @@ Assuma que o tabuleiro tem tamanho ilimitado.
 
 '''
 
+# 100%
 def bfs(o,dest):
-    pai = {}
+    dist = {}
+    dist[o] = 0
     vis = {o}
     queue = [o]
     
     while queue:
         v = queue.pop(0)
-        x, y = v
+        xo, yo = v[0], v[1]
         
         if v == dest:
-            return pai[v]
+            return dist[v]
         
-        for dx, dy in [(1, 2), (2, 1), (2, -1), (1, -2), (-1, -2), (-2, -1), (-2, 1), (-1, 2)]:
-            nx, ny = x + dx, y + dy
-            if (nx, ny) not in vis:
-                vis.add((nx, ny))
-                pai[(nx, ny)] = pai.get(v, 0) + 1
-                queue.append((nx, ny))
+        for i,j in [(1,2), (2,1), (2,-1), (1,-2), (-1,-2), (-2,-1), (-2,1), (-1,2)]:
+            xn,yn = xo + i, yo + j
             
+            if (xn,yn) not in vis:
+                vis.add((xn,yn))
+                dist[(xn,yn)] = dist[v] + 1
+                queue.append((xn,yn))
+                
+                if dest == (xn,yn):
+                    return dist[dest]
 
 def saltos(o,d):
-    if o == d:
-        return 0
-        
-    count = bfs(o,d)
-    
-    return count
+    return bfs(o,d)
