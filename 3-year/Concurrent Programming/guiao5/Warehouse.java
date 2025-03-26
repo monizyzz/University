@@ -58,7 +58,7 @@ class Warehouse {
             }
 
             for (String item : items) {
-                Product p = get(s);
+                Product p = get(item);
                 p.quantity--;
             }
             
