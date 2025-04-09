@@ -1,15 +1,3 @@
-#include<stdio.h>
-#include<stdlib.h>
-
-#define _USE_MATH_DEFINES
-#include <math.h>
-#include <vector>
-#include <string>
-#include <cmath>
-
-
-#include <IL/il.h>
-
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
@@ -17,386 +5,511 @@
 #include <GL/glut.h>
 #endif
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
-float camX = 00, camY = 30, camZ = 40;
-int startX, startY, tracking = 0;
+#define _USE_MATH_DEFINES
+#include <math.h>
+#include <stdio.h>
+#include <vector>
 
-float alpha = 0, beta = 45, r = 50;
-float a = 0.0f, b = 0.0f;
+#include "vector.cpp"
 
-unsigned int t, tw, th;
-unsigned char *imageData;
+#define min(a, b) ((a) < (b) ? (a) : (b))
+#define max(a, b) ((a) > (b) ? (a) : (b))
 
-// buffers is a global variable
-// n is the number of buffers - one buffer per array
-GLuint vertices, verticeCount;
+#define push_float_vert(verts, x, y, z) {\
+							             verts.push_back(x);\
+										 verts.push_back(y);\
+										 verts.push_back(z);\
+								 		}
 
-int timebase;
-float frames;
+struct Image {
+	int width;
+	int height;
+	int channels;
+	unsigned char* data;
+};
 
-void spherical2Cartesian() {
+// counting frames
+int lastTime;
+int frame;
 
-	camX = r * cos(beta) * sin(alpha);
-	camY = r * sin(beta);
-	camZ = r * cos(beta) * cos(alpha);
+// mouse drag
+int buttonPressed = false;
+v2 initialMousePos;
+
+// Global variables for initial camera angles during a mouse drag.
+float initialAlpha;
+float initialBeta;
+
+// Global window dimensions
+int windowWidth = 800;
+int windowHeight = 800;
+
+// Global flag to prevent processing events triggered by glutWarpPointer
+bool isWarping = false;
+
+float mouseSensitivity = 0.0002f;
+
+// camera
+enum cam_type {
+	Fps, Orbital
+};
+
+struct cam {
+	v3 P = {0, 0, 0}, L = {0, 0, -1}, U = {0, 1, 0};
+	float alpha = 0, beta = 0;
+	float radius = 100.0f;
+};
+
+#define EYE_LEVEL 1
+cam camera_orbital;
+cam camera_fps;
+cam_type currentCameraType = cam_type::Fps;
+
+// trees
+#define N_TREES 1000
+int treePosX[N_TREES];
+int treePosY[N_TREES];
+#define R 30
+
+// teapots
+#define N_ITEAPOT 10
+#define RI 5
+#define N_OTEAPOT 20
+#define RO 20
+
+float iteapot_angle = 0;
+float oteapot_angle = 0;
+
+// terrain
+// vbos
+GLuint terrainVertices;
+Image terrainImage;
+int terrainWidth = 200;
+int terrainHeight = 200;
+
+Image loadImage(const char* path) {
+	Image img;
+	img.data = stbi_load(path, &img.width, &img.height, &img.channels, 0);
+	
+	if (!img.data) {
+		printf("Failed to load image: %s\n", path);
+	} else {
+		printf("Image loaded successfully!\n");
+		printf("Width: %d, Height: %d, Channels: %d\n", img.width, img.height, img.channels);
+	}
+	return img;
 }
 
+v2 tex2Coord(int planeWidth, int planeHeight, const Image& img, int x, int y) {
+	float sx = -((float)planeWidth / 2);
+	float sy = -((float)planeHeight / 2);
+	float texToSpaceX = (float)planeWidth / (img.width - 1);
+	float texToSpaceY = (float)planeHeight / (img.height - 1);
 
-void changeSize(int w, int h) {
+	float bl_x = sx + x * texToSpaceX;
+	float bl_y = sy + (img.height - 1 - y) * texToSpaceY;
+	return {bl_x, bl_y};
+}
+
+v2 coord2Tex(int planeWidth, int planeHeight, const Image& img, float x, float y) {
+	float sx = -((float)planeWidth / 2);
+	float sy = -((float)planeHeight / 2);
+	float texToSpaceX = (float)planeWidth / (img.width - 1);
+	float texToSpaceY = (float)planeHeight / (img.height - 1);
+
+	float tex_x = (x - sx) / texToSpaceX;
+	float tex_y = img.height - 1 - ( (y - sy) / texToSpaceY );
+	return { tex_x, tex_y };
+}
+
+float h(const Image& img, int x, int y) {
+	return (float)img.data[(y * img.width + x) * img.channels] * 0.2f;
+}
+
+float hf(int planeWidth, int planeHeight, const Image& img, float px, float py) {
+	v2 tex = coord2Tex(planeWidth, planeHeight, img, px, py);
+
+	int x1 = floor(tex.x);
+	int x2 = x1 + 1;
+	int y1 = floor(tex.y);
+	int y2 = y1 + 1;
+
+	float fy = tex.y - y1;
+	float fx = tex.x - x1;
+
+	float h_x1_y = h(img, x1, y1) * (1-fy) + h(img, x1, y2) * fy;
+	float h_x2_y = h(img, x2, y1) * (1-fy) + h(img, x2, y2) * fy;
+
+	float h_xy = h_x1_y * (1-fx) + h_x2_y * fx;
+
+	return h_xy;
+}
+
+void vboDrawPlaneTextured(std::vector<float>& verts, int planeWidth, int planeHeight, const Image& img) {
+	for (int i = 0; i < img.height - 1; i++) {
+		for (int j = 0; j < img.width; j++) {
+			v2 bl_xy = tex2Coord(planeWidth, planeHeight, img, j, i+1);
+			float bl_z = h(img, j, i+1);
+
+			v2 tl_xy = tex2Coord(planeWidth, planeHeight, img, j, i);
+			float tl_z = h(img, j, i);
+
+			push_float_vert(verts, tl_xy.x, tl_xy.y, tl_z);
+			push_float_vert(verts, bl_xy.x, bl_xy.y, bl_z);
+		}
+	}
+}
+
+void changeSize(int w, int h)
+{
+	// Update global window dimensions
+    windowWidth = w;
+    windowHeight = h;
 
 	// Prevent a divide by zero, when window is too short
 	// (you cant make a window with zero width).
-	if(h == 0)
+	if (h == 0)
 		h = 1;
-
 	// compute window's aspect ratio
-	float ratio = w * 1.0 / h;
-
-	// Reset the coordinate system before modifying
+	float ratio = w * 1.0f / h;
+	// Set the projection matrix as current
 	glMatrixMode(GL_PROJECTION);
+	// Load the identity matrix
 	glLoadIdentity();
-
-	// Set the viewport to be the entire window
-    glViewport(0, 0, w, h);
-
-	// Set the correct perspective
-	gluPerspective(45,ratio,1,1000);
-
+	// Set the perspective
+	gluPerspective(45.0f, ratio, 1.0f, 1000.0f);
 	// return to the model view matrix mode
 	glMatrixMode(GL_MODELVIEW);
+
+	// finally set the viewport to be the entire window
+	glViewport(0, 0, w, h);
 }
 
-
-void prepareTerrain() {
-    // colocar aqui o código de desnho do terreno usando VBOs com TRIANGLE_STRIPS
-	// criar um vector com as coordenadas dos pontos
-	std::vector<float> p;
-
-	for (int i = 0; i < tw; i++) {
-        for (int j = 0; j < th; j++) {
-        	p.push_back(i - tw * 0.5 + 1);
-        	p.push_back(imageData[(i + 1) * tw + j]);
-        	p.push_back(j - th * 0.5);
-
-        	p.push_back(i - tw * 0.5);
-        	p.push_back(imageData[i * tw + j]);
-        	p.push_back(j - th * 0.5);
-
-        }
-    }
-
-	glGenBuffers(1, &vertices);
-	glBindBuffer(GL_ARRAY_BUFFER, vertices);
-	
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * p.size(), p.data(), GL_STATIC_DRAW);
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
+void gluLookAtV3(v3 P, v3 L, v3 U) {
+	gluLookAt(P.x, P.y, P.z,
+		L.x, L.y, L.z,
+		U.x, U.y, U.z);
 }
 
+void setCameraPos(cam_type type) {
+	if (type == cam_type::Orbital) {
+		float cx = camera_orbital.radius * cos(camera_orbital.beta) * sin(camera_orbital.alpha);
+		float cy = camera_orbital.radius * sin(camera_orbital.beta);
+		float cz = camera_orbital.radius * cos(camera_orbital.beta) * cos(camera_orbital.alpha);
 
-void renderTerrain() {
-	glColor3f(0.5f, 0.35f, 0.05f);
-	glEnableClientState(GL_VERTEX_ARRAY);
-
-	glBindBuffer(GL_ARRAY_BUFFER, vertices);
-	glVertexPointer(3, GL_FLOAT, 0, 0);
-	for (int i = 0; i < tw - 1; i++) {
-		glDrawArrays(GL_TRIANGLE_STRIP, i * th * 2, th * 2);
+		camera_orbital.P.x = cx + camera_orbital.L.x;
+		camera_orbital.P.y = cy + camera_orbital.L.y;
+		camera_orbital.P.z = cz + camera_orbital.L.z;
 	}
+	else {
+		camera_fps.P.y = EYE_LEVEL + hf(terrainWidth, terrainHeight, terrainImage, camera_fps.P.x, - camera_fps.P.z);
+
+		camera_fps.L.x = camera_fps.P.x + cos(camera_fps.beta) * sin(camera_fps.alpha);
+		camera_fps.L.y = camera_fps.P.y - sin(camera_fps.beta);
+		camera_fps.L.z = camera_fps.P.z + cos(camera_fps.beta) * cos(camera_fps.alpha);
+	}
+}
+
+void renderScene(void)
+{
+	// clear buffers
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
+	// set camera using the current camera type
+	glLoadIdentity();
+	setCameraPos(currentCameraType);
+	if (currentCameraType == cam_type::Orbital) {
+		gluLookAtV3(camera_orbital.P, camera_orbital.L, camera_orbital.U);
+	} else {
+		gluLookAtV3(camera_fps.P, camera_fps.L, camera_fps.U);
+	}
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	// draw torus
+	glColor3f(1, 0.75, 0.8);
+	glutSolidTorus(1.0f, 2.0f, 10, 10);
+
+	glPushMatrix();
+	glTranslatef(0, 1, 0);
+
+	iteapot_angle -= 2;
+	iteapot_angle = fmod(iteapot_angle, 360.0f/N_ITEAPOT);
+
+	glColor3f(0, 0, 1); // Blue color
+	// draw inner teapots
+	for (int i = 0; i < N_ITEAPOT; i++) {
+		glPushMatrix();
+		glRotatef(i * 360.0f/N_ITEAPOT + iteapot_angle, 0, 1, 0);
+		glTranslatef(RI, 0, 0);
+		glutSolidTeapot(1);
+		glPopMatrix();
+	}
+
+	oteapot_angle += 0.5;
+	oteapot_angle = fmod(oteapot_angle, 360.0f/N_OTEAPOT);
+
+	glColor3f(1, 0, 0); // Red color
+	// draw outer teapots
+	for (int i = 0; i < N_OTEAPOT; i++) {
+		glPushMatrix();
+		glRotatef(i * 360.0f/N_OTEAPOT + oteapot_angle, 0, 1, 0);
+		glTranslatef(RO, 0, 0);
+		glRotatef(90, 0, 1, 0);
+		glutSolidTeapot(1);
+		glPopMatrix();
+	}
+	glPopMatrix();
+
+	// draw trees
+	glPushMatrix();
+	glRotatef(-90, 1, 0, 0);
+	for (int i = 0; i < N_TREES; i++) {
+		// draw tree base
+		glPushMatrix();
+		float h = hf(terrainWidth, terrainHeight, terrainImage, treePosX[i], treePosY[i]);
+		glTranslatef(treePosX[i], treePosY[i], h);
+
+		glColor3f(0.5, 0.25, 0); // Brown color
+		glutSolidCone(0.3f, 5.0f, 10, 10);
+
+		// draw tree top
+		glPushMatrix();
+		glTranslatef(0, 0, 1);
+
+		glColor3f(0.1, 0.5, 0); // Green color
+		glutSolidCone(1.0f, 4.0f, 10, 10);
+
+		glPopMatrix();
+		glPopMatrix();
+	}
+	glPopMatrix();
+
+	// draw plane
+	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glPushMatrix();
+	glColor3f(1, 1, 1);
+	glRotatef(-90, 1, 0, 0);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glBindBuffer(GL_ARRAY_BUFFER, terrainVertices);
+	glVertexPointer(3, GL_FLOAT, 0, 0);
+
+	for (int i = 0; i < terrainImage.height - 1 ; i++) {
+		glDrawArrays(GL_TRIANGLE_STRIP, (terrainImage.width) * 2 * i, (terrainImage.width) * 2);
+	}
+
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glDisableClientState(GL_VERTEX_ARRAY);
-}
-
-void createPinkTorus() {
-	glPushMatrix();
-    glColor3f(1.0f, 0.0f, 1.0f);
-    glTranslatef(0.0f, 0.0f, 0.0f);
-    glutSolidTorus(0.5, 1.0, 30, 30);
 	glPopMatrix();
-}
 
-
-void createCowBoys(float a) {
-	glColor3f(0.0f, 0.0f, 1.0f);
-    int numBlueTeapots = 8;
-    float rc = 15.0f;
-    for (int i = 0; i < numBlueTeapots; ++i) {
-        float angle = -2.0f * M_PI * i / numBlueTeapots ; // clockwise
-        float x = rc * sin(angle + a);
-		float z = rc * cos(angle + a);
-
-        glPushMatrix();
-        glTranslatef(x, 1.0f, z);
-		glRotatef((angle + a) * 180 / M_PI - 90, 0.0f, 1.0f, 0.0f);
-        glutSolidTeapot(1.0);
-        glPopMatrix();
-    }
-}
-
-
-
-void createIndians(float b) {
-	glColor3f(1.0f, 0.0f, 0.0f);
-	int numRedTeapots = 16;
-    float ri = 35.0f;
-    for (int i = 0; i < numRedTeapots; ++i) {
-        float angle = 2.0f * M_PI * i / numRedTeapots; // counter-clockwise
-        float x = ri * sin(angle + b);
-		float z = ri * cos(angle + b);
-
-        glPushMatrix();
-        glTranslatef(x, 1.0f, z);
-		glRotatef((angle + b) * 180 / M_PI, 0.0f, 1.0f, 0.0f);
-        glutSolidTeapot(1.0);
-        glPopMatrix();
-    }
-}
-
-void createTrees() {
-	int numTrees = rand() % 250 + 250; // rand - returns a number between 0 and RAND_MAX
-	float minR = 50.0f;
-    float maxR = 120.0f;
-	for (int i = 0; i < numTrees; ++i) {
-		float angle = 2.0f * M_PI * rand() / RAND_MAX;
-		float distance = minR + (maxR - minR) * rand() / RAND_MAX; 
-		float x = distance * sin(angle);
-		float z = distance * cos(angle);
-
-
-		// Tronco
-		glPushMatrix();
-		glColor3f(0.5f, 0.35f, 0.05f);
-		glTranslatef(x, 0.0f, z);
-		glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
-		glutSolidCone(1.0, 5.0, 10, 10);
-		glPopMatrix();
-		
-		// Folhas
-		glPushMatrix();
-    	glColor3f(0.0f, 1.0f, 0.0f);
-		glTranslatef(x, 3.0f, z);
-		glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
-		glutSolidCone(2.0, 7.0, 20, 20);
-		glPopMatrix();
-	}
-
-	
-}
-
-
-void renderScene(void) {
-
-	float pos[4] = {-1.0, 1.0, 1.0, 0.0};
-
-	glClearColor(0.0f,0.0f,0.0f,0.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	glLoadIdentity();
-	gluLookAt(camX, camY, camZ,
-		      0.0,0.0,0.0,
-			  0.0f,1.0f,0.0f);
-
-
-
-	srand(10); // start the random number sequence
-
-	a -= 0.01f;
-	b += 0.01f;
-	
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-	createPinkTorus();
-
-	createCowBoys(a);
-
-	createIndians(b);
-
-	createTrees();
-	
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-	renderTerrain();
-
-	
-	// just so that it renders something before the terrain is built
-	// to erase when the terrain is ready
-
-
-// End of frame
+	// End of frame
 	glutSwapBuffers();
 
-	frames++;
-	int time = glutGet(GLUT_ELAPSED_TIME);
-	if (time - timebase > 1000) {
-		int fps = frames * 1000.0 / (time - timebase);
-		timebase = time;
-		frames = 0;
-		glutSetWindowTitle(std::to_string(fps).c_str());
+	// Update timing info (existing code)
+	frame++;
+	float currentTime = glutGet(GLUT_ELAPSED_TIME);
+	float dt = (currentTime - lastTime) / 1000.0f;
+	if (currentTime - lastTime > 1000) {
+		float fps = frame * 1000.0 / (currentTime - lastTime);
+		char title[100];
+		sprintf(title, "OpenGL Window - FPS: %.2f - DT: %.3f", fps, dt);
+		glutSetWindowTitle(title);
+		lastTime = currentTime;
+		frame = 0;
 	}
+	
+	lastTime = currentTime;
 }
 
+void printInfo() {
+	printf("Vendor: %s\n", glGetString(GL_VENDOR));
+	printf("Renderer: %s\n", glGetString(GL_RENDERER));
+	printf("Version: %s\n", glGetString(GL_VERSION));
+}
 
-void processKeys(unsigned char key, int xx, int yy) {
-
-// put code to process regular keys in here
+void keyPress(unsigned char key, int x, int y) {
+	if (currentCameraType == cam_type::Fps) {
+		v3 D = camera_fps.P - camera_fps.L;
+		v3 right = normalize(cross(camera_fps.U, D));
+		switch (key) {
+			case 's':
+				camera_fps.P = camera_fps.P + D * 0.5f;
+				break;
+			case 'w':
+				camera_fps.P = camera_fps.P - D * 0.5f;
+				break;
+			case 'a':
+				camera_fps.P = camera_fps.P - right * 0.5f;
+				break;
+			case 'd':
+				camera_fps.P = camera_fps.P + right * 0.5f;
+				break;
+		}
+	}
 
 	switch (key) {
-		case 'q': 
-			exit(0); 
+		case 'c':
+			if (currentCameraType == cam_type::Orbital) {
+				glutSetCursor(GLUT_CURSOR_NONE);
+				glutWarpPointer(windowWidth / 2, windowHeight / 2);
+				currentCameraType = cam_type::Fps;
+			} else {
+				glutSetCursor(GLUT_CURSOR_INHERIT);
+				currentCameraType = cam_type::Orbital;
+			}
 			break;
-
-		case '+':
-			r -= 1.0f;
-			if (r < 1.0f)
-				r = 1.0f;
-			break;
-		
-		case '-':
-			r += 1.0f;
-			break;
-		default:
+		case 'q':
+			exit(0);
 			break;
 	}
 
-	spherical2Cartesian();
 	glutPostRedisplay();
 }
 
-
-
-void processMouseButtons(int button, int state, int xx, int yy) {
-
-	if (state == GLUT_DOWN)  {
-		startX = xx;
-		startY = yy;
-		if (button == GLUT_LEFT_BUTTON)
-			tracking = 1;
-		else if (button == GLUT_RIGHT_BUTTON)
-			tracking = 2;
-		else
-			tracking = 0;
-	}
-	else if (state == GLUT_UP) {
-		if (tracking == 1) {
-			alpha += (xx - startX);
-			beta += (yy - startY);
+void mouseMove(int x, int y) {
+	if (currentCameraType == cam_type::Fps) {
+		int centerX = windowWidth / 2;
+		int centerY = windowHeight / 2;
+		
+		// If this event was triggered by our own call to glutWarpPointer, ignore it.
+		if (isWarping) {
+			isWarping = false;
+			return;
 		}
-		else if (tracking == 2) {
-
-			r -= yy - startY;
-			if (r < 3)
-				r = 3.0;
+		
+		// Calculate delta relative to the center of the window.
+		int deltaX = x - centerX;
+		int deltaY = y - centerY;
+		
+		// Update camera angles based on the delta.
+		camera_fps.alpha -= deltaX * mouseSensitivity;
+		camera_fps.beta  += deltaY * mouseSensitivity;
+		
+		// Clamp beta to avoid flipping.
+		if (camera_fps.beta < -M_PI_2 + 0.1f)
+			camera_fps.beta = -M_PI_2 + 0.1f;
+		else if (camera_fps.beta > M_PI_2 - 0.1f)
+			camera_fps.beta = M_PI_2 - 0.1f;
+		
+		// Set flag to indicate we're warping the pointer.
+		isWarping = true;
+		glutWarpPointer(centerX, centerY);
+	} 
+	else { 
+		// Orbital mode: use the existing "click-and-drag" behavior.
+		if (buttonPressed) {
+			v2 currentMousePos = {(float)x, (float)y};
+			v2 deltaMousePos = currentMousePos - initialMousePos;
+			
+			camera_orbital.alpha = initialAlpha - deltaMousePos.x * 0.005f;
+			camera_orbital.beta  = initialBeta + deltaMousePos.y * 0.005f;
+			
+			if (camera_orbital.beta < -M_PI_2 + 0.1f)
+				camera_orbital.beta = -M_PI_2 + 0.1f;
+			else if (camera_orbital.beta > M_PI_2 - 0.1f)
+				camera_orbital.beta = M_PI_2 - 0.1f;
 		}
-		tracking = 0;
 	}
+	
+	glutPostRedisplay();
 }
 
-
-void processMouseMotion(int xx, int yy) {
-
-	int deltaX, deltaY;
-	int alphaAux, betaAux;
-	int rAux;
-
-	if (!tracking)
-		return;
-
-	deltaX = xx - startX;
-	deltaY = yy - startY;
-
-	if (tracking == 1) {
-
-
-		alphaAux = alpha + deltaX;
-		betaAux = beta + deltaY;
-
-		if (betaAux > 85.0)
-			betaAux = 85.0;
-		else if (betaAux < -85.0)
-			betaAux = -85.0;
-
-		rAux = r;
+void mouseClick(int button, int state, int x, int y) {
+	cam& camera = (currentCameraType == cam_type::Orbital) ? camera_orbital : camera_fps;
+	if (state == GLUT_DOWN && button == GLUT_LEFT_BUTTON) {
+		// Store the initial mouse position.
+		initialMousePos = {(float)x, (float)y};
+		// Store the current camera angles.
+		initialAlpha = camera.alpha;
+		initialBeta = camera.beta;
+		buttonPressed = true;
 	}
-	else if (tracking == 2) {
-
-		alphaAux = alpha;
-		betaAux = beta;
-		rAux = r - deltaY;
-		if (rAux < 3)
-			rAux = 3;
+	else if (state == GLUT_UP && button == GLUT_LEFT_BUTTON) {
+		buttonPressed = false;
 	}
-
-	camX = rAux * sin(alphaAux * 3.14 / 180.0) * cos(betaAux * 3.14 / 180.0);
-	camZ = rAux * cos(alphaAux * 3.14 / 180.0) * cos(betaAux * 3.14 / 180.0);
-	camY = rAux * 							     sin(betaAux * 3.14 / 180.0);
-
+	else if (button == 3) {
+        camera.radius *= 0.99f;
+    } else if (button == 4) {
+        camera.radius *= 1.01f;
+    }
 }
 
+int main(int argc, char** argv)
+{
+	for (int i = 0; i < N_TREES; i++) {
+		float randX = 0.0f;
+		float randY = 0.0f;
+		do {
+			randX = (float)rand() / RAND_MAX * terrainWidth - terrainWidth/2;
+			randY = (float)rand() / RAND_MAX * terrainHeight - terrainHeight/2;
+		} while (randX * randX + randY * randY < R * R);
+		treePosX[i] = randX;
+		treePosY[i] = randY;
+	}
 
-void init() {
-	ilInit();
-
-	ilGenImages(1,&t);
-	ilBindImage(t);
-	// terreno.jpg is the image containing our height map
-	ilLoadImage((ILstring)"terreno.jpg");
-	// convert the image to single channel per pixel
-	// with values ranging between 0 and 255
-	ilConvertImage(IL_LUMINANCE, IL_UNSIGNED_BYTE);
-	// important: check tw and th values
-	// both should be equal to 256
-	// if not there was an error loading the image
-	// most likely the image could not be found
-	tw = ilGetInteger(IL_IMAGE_WIDTH);
-	th = ilGetInteger(IL_IMAGE_HEIGHT);
-	// imageData is a LINEAR array with the pixel values
-	imageData = ilGetData();
-
-// 	Build the vertex arrays
-	prepareTerrain();
-
-
-// 	OpenGL settings
-	// glEnable(GL_DEPTH_TEST);
-	// glEnable(GL_CULL_FACE);
-	// glPolygonMode(GL_FRONT, GL_LINE);
-}
-
-
-
-int main(int argc, char **argv) {
-
-// init GLUT and the window
+	// put GLUT init here
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DEPTH|GLUT_DOUBLE|GLUT_RGBA);
-	glutInitWindowPosition(100,100);
-	glutInitWindowSize(800,800);
-	glutCreateWindow("CG@DI-UM");
+	printInfo();
 
+	// Set display mode (single buffer and RGBA)
+	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 
-// Required callback registry
+	// Set window size and position
+	glutInitWindowSize(windowWidth, windowHeight);
+	glutInitWindowPosition(100, 100);
+
+	// Create a window with a title
+	glutCreateWindow("OpenGL Window");
+
+	// Hide the mouse cursor and center it
+	glutSetCursor(GLUT_CURSOR_NONE);
+	glutWarpPointer(windowWidth / 2, windowHeight / 2);
+
+	// Register display callback
 	glutDisplayFunc(renderScene);
-	glutIdleFunc(renderScene);
+	glutIdleFunc(renderScene); // to count frames
 	glutReshapeFunc(changeSize);
+	glutKeyboardFunc(keyPress);
+	glutMouseFunc(mouseClick);
+	glutMotionFunc(mouseMove);
+	glutPassiveMotionFunc(mouseMove);
 
-	timebase = glutGet(GLUT_ELAPSED_TIME);
-
-// Callback registration for keyboard processing
-	glutKeyboardFunc(processKeys);
-	glutMouseFunc(processMouseButtons);
-	glutMotionFunc(processMouseMotion);
-
-	glEnable(GL_DEPTH_TEST);
-	//glEnable(GL_CULL_FACE);
-	spherical2Cartesian();
-
+	// init GLEW
 	glewInit();
-	init();
+	glEnableClientState(GL_VERTEX_ARRAY);
 
+	// some OpenGL settings
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	
+	// enter GLUTs main cycle
+	terrainImage = loadImage("../assets/terreno.jpg");
+	if (!terrainImage.data) {
+		return 0;
+	}
+	if (terrainImage.width != terrainImage.height) {
+		printf("Image must be square for the terrain!\n");
+		return 0;
+	}
 
-// enter GLUT's main cycle
+	// Create the vertex buffer for the terrain plane using the image info.
+	std::vector<float> vertexB;
+	// plane dimensions are separate (here, terrainWidth by terrainHeight units)
+	vboDrawPlaneTextured(vertexB, terrainWidth, terrainHeight, terrainImage);
+
+	glGenBuffers(1, &terrainVertices);
+	glBindBuffer(GL_ARRAY_BUFFER, terrainVertices);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float)*vertexB.size(), vertexB.data(), GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	// Optionally, free the image data if no longer needed:
+	// stbi_image_free(terrainImage.data);
+
+	lastTime = glutGet(GLUT_ELAPSED_TIME);
 	glutMainLoop();
-
-	return 0;
+	
+	return 1;
 }
