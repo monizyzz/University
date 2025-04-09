@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/home/bernardomoniz/Code/University/3-year/Computer Graphics/class12/build",
+  "command": "/usr/bin/c++   -g -o CMakeFiles/class12.dir/main.cpp.o -c \"/home/bernardomoniz/Code/University/3-year/Computer Graphics/class12/main.cpp\"",
+  "file": "/home/bernardomoniz/Code/University/3-year/Computer Graphics/class12/main.cpp",
+  "output": "CMakeFiles/class12.dir/main.cpp.o"
+}
+]
