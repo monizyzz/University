@@ -1,0 +1,3 @@
+/home/bernardomoniz/Code/University/3-year/Computer Graphics/class10/build/CMakeFiles/class10.dir
+/home/bernardomoniz/Code/University/3-year/Computer Graphics/class10/build/CMakeFiles/edit_cache.dir
+/home/bernardomoniz/Code/University/3-year/Computer Graphics/class10/build/CMakeFiles/rebuild_cache.dir
