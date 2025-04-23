@@ -15,8 +15,6 @@ server(Port) ->
 acceptor(LSock, Room) ->
   {ok, Sock} = gen_tcp:accept(LSock),
   spawn(fun() -> acceptor(LSock, Room) end),
-  
-  %Room ! {enter, self()},
   user_logged_out(Sock, Room).
 
 room(Pids) ->
@@ -42,10 +40,10 @@ user_logged_out(Sock, Room) ->
           gen_tcp:send(Sock, io_lib:format("~p\n", [Response])),
           user_logged_out(Sock, Room);
         ["/l", User, Pass] -> 
-          % TODO: login
           case login_manager:login(User, Pass) of
             ok -> 
               gen_tcp:send(Sock, "logged in\n"),
+              Room ! {enter, self()},
               user_logged_in(Sock, Room, User);
             _ -> 
               gen_tcp:send(Sock, "invalid\n"),
