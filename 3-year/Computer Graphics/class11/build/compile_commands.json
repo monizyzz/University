@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/home/bernardomoniz/Code/University/3-year/Computer Graphics/class11/build",
+  "command": "/usr/bin/c++  -I\"/home/bernardomoniz/Code/University/3-year/Computer Graphics/class11/ยง{IL_INCLUDE_DIR}\" -g -o CMakeFiles/class11.dir/main.cpp.o -c \"/home/bernardomoniz/Code/University/3-year/Computer Graphics/class11/main.cpp\"",
+  "file": "/home/bernardomoniz/Code/University/3-year/Computer Graphics/class11/main.cpp",
+  "output": "CMakeFiles/class11.dir/main.cpp.o"
+}
+]
